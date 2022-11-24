@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XSS Hunter</title>
+  <link rel="stylesheet" href="/static/css/index.css">
+</head>
+
+<body>
+  <nav class="nav">
+    <a href="/" class="nav__link" data-link>Dashboard</a>
+    <a href="/pages" class="nav__link req__auth" data-link>Pages</a>
+    <a href="/payloads" class="nav__link req__auth" data-link>Payloads</a>
+    <a href="/settings" class="nav__link req__auth" data-link>Settings</a>
+    <a href="/login" class="nav__link no__auth" data-link>Log in/Sign Up</a>
+    <a href="/logout" class="nav__link req__auth" data-link>Log out</a>
+  </nav>
+  <div id="app"></div>
+  <script type="module" src="/static/js/index.js"></script>
+</body>
+
+</html>
