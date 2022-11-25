@@ -23,7 +23,7 @@ export default class extends AbstractView {
   async getHtml() {
     return `
       <h1> Collected Pages </h1>
-      <p> lorem ipsum stuff </p> 
+      <p> Posts made to callback URL ('/callback/:username') </p> 
       <p>
         <ul id="pageList"></ul>
         <a href="/" data-link> View dashboard </a>

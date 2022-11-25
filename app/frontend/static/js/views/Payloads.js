@@ -18,8 +18,9 @@ export default class extends AbstractView {
       item["payloads"].forEach( async (payload) => {
           console.log({ payload });
           let li = document.createElement("li");
-          let clipCode = new ClipCode;
-          let clipEl = await clipCode.getElement(payload);
+          let clipCode = new ClipCode(payload);
+          console.log({ clipCode });
+          let clipEl = await clipCode.getElement();
           console.log({ clipEl });
           li.appendChild(clipEl);
           payloadList.appendChild(li);
