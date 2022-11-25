@@ -24,7 +24,7 @@ pub async fn get_payloads(
     ([("content-type", "application/json")], rendered)
 }
 
-pub async fn delete_request(
+pub async fn delete_page(
     Extension(state): Extension<State>,
     Path(path): Path<i32>,
     session: ReadableSession,
@@ -61,20 +61,19 @@ pub async fn delete_request(
 // }
 
 #[derive(Serialize)]
-struct RequestSchema {
+struct CollectedPages {
     id: i32,
     origin: String,
-    text: String,
 }
 
-pub async fn get_requests(
+pub async fn get_pages(
     Extension(state): Extension<State>,
     session: ReadableSession,
     // query: Query<DataQuery>,
 ) -> impl IntoResponse {
     let username = session.get::<String>("username").unwrap();
-    let rows: Vec<(i32, String, String)> =
-        sqlx::query_as("SELECT id, origin, text FROM requests WHERE username=?")
+    let rows: Vec<(i32, String)> =
+        sqlx::query_as("SELECT id, origin FROM requests WHERE username=?")
             .bind(username)
             .fetch_all(&state.db_pool)
             .await
@@ -82,15 +81,53 @@ pub async fn get_requests(
 
     let results = rows
         .iter()
-        .map(|(id, origin, text)| RequestSchema {
+        .map(|(id, origin)| CollectedPages {
             id: *id,
             origin: origin.to_string(),
-            text: text.to_string(),
         })
-        .collect::<Vec<RequestSchema>>();
+        .collect::<Vec<CollectedPages>>();
 
     (
         [("content-type", "application/json")],
         serde_json::to_string(&results).unwrap(),
     )
+}
+
+#[derive(Serialize)]
+struct CollectedPage {
+    id: i32,
+    origin: String,
+    text: String,
+}
+
+pub async fn get_page(
+    Extension(state): Extension<State>,
+    Path(path): Path<i32>,
+    session: ReadableSession,
+) -> impl IntoResponse {
+    let username = session.get::<String>("username").unwrap();
+
+    let row: (i32, String, String, String) =
+        sqlx::query_as("SELECT id, username, origin, text FROM requests WHERE id=?")
+            .bind(path)
+            .fetch_one(&state.db_pool)
+            .await
+            .unwrap();
+
+    if username != row.1 {
+        // user doesnt own this record
+        return StatusCode::UNAUTHORIZED.into_response();
+    }
+
+    let result = CollectedPage {
+        id: row.0,
+        origin: row.2,
+        text: row.3,
+    };
+
+    (
+        [("content-type", "application/json")],
+        serde_json::to_string(&result).unwrap(),
+    )
+        .into_response()
 }

@@ -2,7 +2,7 @@ import AbstractComponent from "./AbstractComponent.js";
 import navigateTo from "../index.js";
 
 export default class extends AbstractComponent {
-  constructor(preview, pageId) {
+  constructor(pageId, preview) {
     super(null);
     this.preview = preview;
     this.pageId = pageId;

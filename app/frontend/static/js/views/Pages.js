@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView.js";
+import CollectedPage from "../components/CollectedPage.js";
 
 export default class extends AbstractView {
   constructor(params) {
@@ -9,11 +10,13 @@ export default class extends AbstractView {
   async doScript() {
     let list = document.getElementById("pageList");
     
-    fetch("/api/requests").then( (resp) => {
+    fetch("/api/pages").then( (resp) => {
       resp.json().then( (data) => {
-        data.forEach( (item) => {
+        data.forEach( async (item) => {
           let li = document.createElement("li");
-          li.innerText = JSON.stringify(item);
+          let collectedPage = new CollectedPage(item.id, item.origin);
+          let pageElement = await collectedPage.getElement();
+          li.appendChild(pageElement);
           list.appendChild(li);
         });
       });
