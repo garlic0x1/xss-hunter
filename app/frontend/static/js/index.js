@@ -89,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function updateNavBar() {
+  console.log("updating navbar");
   let authenticated = window.localStorage.getItem("authenticated");
   
   let reqAuth = Array.from(document.getElementsByClassName("req__auth"));
