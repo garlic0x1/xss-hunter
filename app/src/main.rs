@@ -10,6 +10,7 @@ use clap::Parser;
 use std::net::{IpAddr, SocketAddr};
 use std::str::FromStr;
 use tower::ServiceBuilder;
+use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
 use tower_http::trace::TraceLayer;
 
@@ -85,7 +86,8 @@ async fn main() -> anyhow::Result<()> {
 
     let callback_router = axum::Router::new()
         .route("/:user", get(callback::probe))
-        .route("/:user", post(callback::collector));
+        .route("/:user", post(callback::collector))
+        .layer(CorsLayer::permissive());
 
     let auth_router = axum::Router::new()
         .route("/signup", post(auth::signup))
