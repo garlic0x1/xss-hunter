@@ -1,3 +1,7 @@
+use std::collections::HashMap;
+
+use axum::http::HeaderMap;
+
 pub fn db_connect() -> Result<sqlx::Pool<sqlx::MySql>, sqlx::Error> {
     let url = std::env::var("DATABASE_URL").unwrap();
 
@@ -30,6 +34,17 @@ pub fn jinja_env() -> minijinja::Environment<'static> {
         "/templates/"
     )));
     env
+}
+
+pub fn serialize_headers(headers: HeaderMap) -> String {
+    let mut map = HashMap::new();
+    headers.iter().for_each(|(key, value)| {
+        map.insert(
+            key.as_str().to_string(),
+            value.to_str().unwrap_or_default().to_string(),
+        );
+    });
+    serde_json::to_string(&map).unwrap_or_default()
 }
 
 pub async fn handle_error(_err: std::io::Error) -> impl axum::response::IntoResponse {

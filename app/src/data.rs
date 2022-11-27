@@ -63,7 +63,8 @@ pub async fn delete_page(
 #[derive(Serialize)]
 struct CollectedPages {
     id: i32,
-    time: String,
+    uri: Option<String>,
+    time: chrono::DateTime<chrono::Utc>,
 }
 
 pub async fn get_pages(
@@ -72,28 +73,22 @@ pub async fn get_pages(
     // query: Query<DataQuery>,
 ) -> impl IntoResponse {
     let username = session.get::<String>("username").unwrap();
-    let rows: Vec<(i32, chrono::DateTime<chrono::Utc>)> =
-        sqlx::query_as("SELECT id, time FROM pages WHERE username=?")
-            .bind(username)
-            .fetch_all(&state.db_pool)
-            .await
-            .unwrap();
-
-    let results = rows
-        .iter()
-        .map(|(id, time)| CollectedPages {
-            id: *id,
-            time: time.to_string(),
-        })
-        .collect::<Vec<CollectedPages>>();
+    let rows = sqlx::query_as!(
+        CollectedPages,
+        "SELECT id, uri, time FROM pages WHERE username=?",
+        username
+    )
+    .fetch_all(&state.db_pool)
+    .await
+    .unwrap();
 
     (
         [("content-type", "application/json")],
-        serde_json::to_string(&results).unwrap(),
+        serde_json::to_string(&rows).unwrap(),
     )
 }
 
-#[derive(Serialize, sqlx::FromRow)]
+#[derive(Serialize)]
 struct PageSchema {
     id: i32,
     username: Option<String>,
@@ -128,7 +123,7 @@ pub async fn get_page(
             uri, cookies, referrer, user_agent,
             origin, title, text, dom, was_iframe,
             time
-        FROM pages WHERE id=?",
+         FROM pages WHERE id=?",
         path
     )
     .fetch_one(&state.db_pool)

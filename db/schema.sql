@@ -11,8 +11,11 @@ CREATE TABLE pages
 	id INTEGER AUTO_INCREMENT,
 	username varchar(64),
 	peer varchar(32),
+	
+	-- headers stored as json
 	headers varchar(2048),
 
+	-- probe post data
 	uri varchar(256),
 	cookies varchar(1024),
 	referrer varchar(256),

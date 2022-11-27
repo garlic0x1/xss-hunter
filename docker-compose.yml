@@ -16,9 +16,8 @@ services:
     environment:
       # change these secrets before deploying
       SESSION_KEY: ea7941810cfedbbdc00e26df5c70cc19080bcdf840d878bb3099a07ad4810a80b72e82e5e865f5cc57a263563661d0bb784b94f95041a8c8aa34e5d2ddb5bd5e
-      HOSTNAME: desktop.garlic
-      PUBLIC_URL: http://desktop.garlic:8080
-      MYSQL_URL: mysql://root:secret@mysql:3306/app     
+      PUBLIC_URL: http://laptop.garlic:8080
+      DATABASE_URL: mysql://root:secret@mysql:3306/app     
     ports: 
       - 80:8080
 

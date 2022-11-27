@@ -61,7 +61,7 @@ function main() {
         "title": "document.title",
         "text": "get_dom_text()",
         "dom": "document.documentElement.outerHTML",
-        // "screenshot": "take_screenshot()",
+        "screenshot": "take_screenshot()",
         "was_iframe": "(!(window.top === window)).toString()",
     };
 

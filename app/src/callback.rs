@@ -1,3 +1,4 @@
+use crate::auxiliary::serialize_headers;
 use crate::State;
 use axum::{
     extract::{ConnectInfo, Extension, Json, Path},
@@ -32,7 +33,7 @@ pub struct CallbackData {
     text: String,
     dom: String,
     was_iframe: String,
-    // screenshot: String,
+    screenshot: String,
 }
 
 // collect info from probe
@@ -51,12 +52,12 @@ pub async fn collector(
              uri, cookies, referrer,
              user_agent, origin, title,
              text, dom, was_iframe)
-        VALUES
+         VALUES
             (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(user)
     .bind(peer.to_string())
-    .bind(format!("{:?}", headers))
+    .bind(serialize_headers(headers))
     .bind(data.uri)
     .bind(data.cookies)
     .bind(data.referrer)
