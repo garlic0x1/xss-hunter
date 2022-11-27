@@ -2,7 +2,7 @@ use crate::State;
 use axum::{
     body::Body,
     extract::{ConnectInfo, Extension, Path},
-    http::Request,
+    http::{HeaderMap, Request},
     response::IntoResponse,
 };
 use std::net::SocketAddr;
@@ -26,10 +26,14 @@ pub async fn collector(
     Extension(state): Extension<State>,
     Path(user): Path<String>,
     ConnectInfo(peer): ConnectInfo<SocketAddr>,
-    request: Request<Body>,
+    headers: HeaderMap,
+    body: String,
 ) {
-    let mut headers = format!("{:?}", request.headers());
-    let mut body = format!("{:?}", request.body());
+    println!("hit");
+    let mut headers = format!("{:?}", headers);
+    let mut body = body;
+
+    println!("{body}");
 
     // trim to fit in database
     if headers.len() > 1024 {
