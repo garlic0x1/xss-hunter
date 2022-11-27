@@ -5,7 +5,6 @@ mod data;
 
 use axum::routing::{delete, get, get_service, post};
 use axum::{Extension, Router};
-// use axum_extra::routing::SpaRouter;
 use clap::Parser;
 use std::net::{IpAddr, SocketAddr};
 use std::str::FromStr;
@@ -14,7 +13,6 @@ use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
 use tower_http::trace::TraceLayer;
 
-// Setup the command line options
 #[derive(Parser, Debug)]
 struct Opt {
     /// set the listen addr
@@ -46,6 +44,7 @@ pub struct State {
 async fn main() -> anyhow::Result<()> {
     let opt = Opt::parse();
 
+    // load env vars from .env
     dotenv::dotenv().ok();
 
     // set up logging

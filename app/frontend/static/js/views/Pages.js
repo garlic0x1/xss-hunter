@@ -14,7 +14,7 @@ export default class extends AbstractView {
       resp.json().then( (data) => {
         data.forEach( async (item) => {
           let li = document.createElement("li");
-          let collectedPage = new CollectedPage(item.id, item.origin);
+          let collectedPage = new CollectedPage(item.id, item.time);
           let pageElement = await collectedPage.getElement();
           li.appendChild(pageElement);
           list.appendChild(li);

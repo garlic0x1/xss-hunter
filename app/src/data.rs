@@ -31,7 +31,7 @@ pub async fn delete_page(
 ) -> impl IntoResponse {
     let username = session.get::<String>("username").unwrap();
 
-    let row: (String,) = sqlx::query_as("SELECT username FROM requests WHERE id=?")
+    let row: (String,) = sqlx::query_as("SELECT username FROM pages WHERE id=?")
         .bind(path)
         .fetch_one(&state.db_pool)
         .await
@@ -42,7 +42,7 @@ pub async fn delete_page(
         return StatusCode::UNAUTHORIZED;
     }
 
-    let res = sqlx::query("DELETE FROM requests WHERE id=?")
+    let res = sqlx::query("DELETE FROM pages WHERE id=?")
         .bind(path)
         .execute(&state.db_pool)
         .await;
@@ -63,7 +63,7 @@ pub async fn delete_page(
 #[derive(Serialize)]
 struct CollectedPages {
     id: i32,
-    origin: String,
+    time: String,
 }
 
 pub async fn get_pages(
@@ -72,8 +72,8 @@ pub async fn get_pages(
     // query: Query<DataQuery>,
 ) -> impl IntoResponse {
     let username = session.get::<String>("username").unwrap();
-    let rows: Vec<(i32, String)> =
-        sqlx::query_as("SELECT id, origin FROM requests WHERE username=?")
+    let rows: Vec<(i32, chrono::DateTime<chrono::Utc>)> =
+        sqlx::query_as("SELECT id, time FROM pages WHERE username=?")
             .bind(username)
             .fetch_all(&state.db_pool)
             .await
@@ -81,9 +81,9 @@ pub async fn get_pages(
 
     let results = rows
         .iter()
-        .map(|(id, origin)| CollectedPages {
+        .map(|(id, time)| CollectedPages {
             id: *id,
-            origin: origin.to_string(),
+            time: time.to_string(),
         })
         .collect::<Vec<CollectedPages>>();
 
@@ -97,7 +97,9 @@ pub async fn get_pages(
 struct CollectedPage {
     id: i32,
     origin: String,
-    text: String,
+    headers: String,
+    body: String,
+    time: chrono::DateTime<chrono::Utc>,
 }
 
 pub async fn get_page(
@@ -107,12 +109,18 @@ pub async fn get_page(
 ) -> impl IntoResponse {
     let username = session.get::<String>("username").unwrap();
 
-    let row: (i32, String, String, String) =
-        sqlx::query_as("SELECT id, username, origin, text FROM requests WHERE id=?")
-            .bind(path)
-            .fetch_one(&state.db_pool)
-            .await
-            .unwrap();
+    let row: (
+        i32,
+        String,
+        String,
+        String,
+        String,
+        chrono::DateTime<chrono::Utc>,
+    ) = sqlx::query_as("SELECT id, username, origin, headers, body, time FROM pages WHERE id=?")
+        .bind(path)
+        .fetch_one(&state.db_pool)
+        .await
+        .unwrap();
 
     if username != row.1 {
         // user doesnt own this record
@@ -122,7 +130,9 @@ pub async fn get_page(
     let result = CollectedPage {
         id: row.0,
         origin: row.2,
-        text: row.3,
+        headers: row.3,
+        body: row.4,
+        time: row.5,
     };
 
     (
