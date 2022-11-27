@@ -13,7 +13,7 @@ use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
 use tower_http::trace::TraceLayer;
 
-#[derive(Parser, Debug)]
+#[derive(Parser)]
 struct Opt {
     /// set the listen addr
     #[clap(short = 'a', long = "addr", default_value = "0.0.0.0")]
@@ -52,7 +52,6 @@ async fn main() -> anyhow::Result<()> {
         std::env::set_var("RUST_LOG", "debug,hyper=info,mio=info")
     }
     tracing_subscriber::fmt::init();
-    let logging_layer = ServiceBuilder::new().layer(TraceLayer::new_for_http());
 
     // set up session auth
     let store = async_sqlx_session::MySqlSessionStore::new(&std::env::var("MYSQL_URL")?).await?;
@@ -61,14 +60,15 @@ async fn main() -> anyhow::Result<()> {
     store.cleanup().await?;
 
     // define tower layers
+    let auth_layer = axum::middleware::from_fn(auth::check_auth);
+    let logging_layer = ServiceBuilder::new().layer(TraceLayer::new_for_http());
+    let session_layer =
+        axum_sessions::SessionLayer::new(store, session_key.as_bytes()).with_secure(false);
     let state_layer = Extension(State {
         jinja: auxiliary::jinja_env(),
         db_pool: auxiliary::db_connect()?,
         hostname: std::env::var("HOSTNAME").unwrap_or(opt.hostname),
     });
-    let session_layer =
-        axum_sessions::SessionLayer::new(store, session_key.as_bytes()).with_secure(false);
-    let auth_layer = axum::middleware::from_fn(auth::check_auth);
 
     // define tower routers
     let spa_router = get_service(
