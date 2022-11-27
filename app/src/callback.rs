@@ -30,6 +30,7 @@ pub async fn collector(
 ) {
     let mut headers = format!("{:?}", request.headers());
     let mut body = format!("{:?}", request.body());
+    println!("{body}");
 
     // trim to fit in database
     if headers.len() > 1024 {

@@ -11,7 +11,7 @@ CREATE TABLE pages
 	id INTEGER AUTO_INCREMENT,
 	username varchar(64),
 	origin varchar(64),
-	text varchar(4096),
+	body varchar(4096),
 	time TIMESTAMP,
 	primary key(id)
 );
