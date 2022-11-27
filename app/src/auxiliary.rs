@@ -1,5 +1,5 @@
 pub fn db_connect() -> Result<sqlx::Pool<sqlx::MySql>, sqlx::Error> {
-    let url = std::env::var("MYSQL_URL").unwrap();
+    let url = std::env::var("DATABASE_URL").unwrap();
 
     let mut tries = 15;
 

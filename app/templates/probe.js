@@ -56,13 +56,13 @@ function main() {
         "uri": "location.toString()",
         "cookies": "document.cookie",
         "referrer": "document.referrer",
-        "user-agent": "navigator.userAgent",
+        "user_agent": "navigator.userAgent",
         "origin": "location.origin",
         "title": "document.title",
         "text": "get_dom_text()",
         "dom": "document.documentElement.outerHTML",
-        "screenshot": "take_screenshot()",
-        "was_iframe": "!(window.top === window)",
+        // "screenshot": "take_screenshot()",
+        "was_iframe": "(!(window.top === window)).toString()",
     };
 
     collect_data(collection).then( (data) => callback(data) );

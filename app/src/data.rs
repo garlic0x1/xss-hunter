@@ -11,13 +11,13 @@ pub async fn get_payloads(
     session: ReadableSession,
 ) -> impl IntoResponse {
     let username = session.get::<String>("username").unwrap();
-    let hostname = state.hostname;
+    let public_url = std::env::var("PUBLIC_URL").unwrap();
     let template = state.jinja.get_template("payloads.json").unwrap();
 
     let rendered = template
         .render(minijinja::context! {
             USERNAME => username,
-            HOSTNAME => hostname,
+            PUBLIC_URL => public_url,
         })
         .unwrap();
 
@@ -93,12 +93,24 @@ pub async fn get_pages(
     )
 }
 
-#[derive(Serialize)]
-struct CollectedPage {
+#[derive(Serialize, sqlx::FromRow)]
+struct PageSchema {
     id: i32,
-    origin: String,
-    headers: String,
-    body: String,
+    username: Option<String>,
+    peer: Option<String>,
+    headers: Option<String>,
+
+    // callback body
+    uri: Option<String>,
+    cookies: Option<String>,
+    referrer: Option<String>,
+    user_agent: Option<String>,
+    origin: Option<String>,
+    title: Option<String>,
+    text: Option<String>,
+    dom: Option<String>,
+    was_iframe: Option<String>,
+
     time: chrono::DateTime<chrono::Utc>,
 }
 
@@ -109,35 +121,28 @@ pub async fn get_page(
 ) -> impl IntoResponse {
     let username = session.get::<String>("username").unwrap();
 
-    let row: (
-        i32,
-        String,
-        String,
-        String,
-        String,
-        chrono::DateTime<chrono::Utc>,
-    ) = sqlx::query_as("SELECT id, username, origin, headers, body, time FROM pages WHERE id=?")
-        .bind(path)
-        .fetch_one(&state.db_pool)
-        .await
-        .unwrap();
+    let row = sqlx::query_as!(
+        PageSchema,
+        "SELECT 
+            id, username, peer, headers,
+            uri, cookies, referrer, user_agent,
+            origin, title, text, dom, was_iframe,
+            time
+        FROM pages WHERE id=?",
+        path
+    )
+    .fetch_one(&state.db_pool)
+    .await
+    .unwrap();
 
-    if username != row.1 {
+    if username != row.username.clone().unwrap() {
         // user doesnt own this record
         return StatusCode::UNAUTHORIZED.into_response();
     }
 
-    let result = CollectedPage {
-        id: row.0,
-        origin: row.2,
-        headers: row.3,
-        body: row.4,
-        time: row.5,
-    };
-
     (
         [("content-type", "application/json")],
-        serde_json::to_string(&result).unwrap(),
+        serde_json::to_string(&row).unwrap(),
     )
         .into_response()
 }

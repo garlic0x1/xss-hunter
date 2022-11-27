@@ -37,7 +37,6 @@ struct Opt {
 pub struct State {
     db_pool: sqlx::MySqlPool,
     jinja: minijinja::Environment<'static>,
-    hostname: String,
 }
 
 #[tokio::main]
@@ -54,7 +53,7 @@ async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
     // set up session auth
-    let store = async_sqlx_session::MySqlSessionStore::new(&std::env::var("MYSQL_URL")?).await?;
+    let store = async_sqlx_session::MySqlSessionStore::new(&std::env::var("DATABASE_URL")?).await?;
     let session_key = std::env::var("SESSION_KEY")?;
     store.migrate().await?;
     store.cleanup().await?;
@@ -67,7 +66,6 @@ async fn main() -> anyhow::Result<()> {
     let state_layer = Extension(State {
         jinja: auxiliary::jinja_env(),
         db_pool: auxiliary::db_connect()?,
-        hostname: std::env::var("HOSTNAME").unwrap_or(opt.hostname),
     });
 
     // define tower routers
