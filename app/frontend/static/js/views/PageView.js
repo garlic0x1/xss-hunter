@@ -29,11 +29,8 @@ export default class extends AbstractView {
   async getHtml() {
 
     return `
-      <h1> Collected Pages </h1>
-      <p> Page details </p> 
-      <p>
-        <div id="pageDetails"></div>
-      </p> 
+      <h1> Collected Page </h1>
+      <div id="pageDetails"></div>
     `;
   }
 }

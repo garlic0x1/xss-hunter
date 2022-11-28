@@ -13,13 +13,11 @@ export default class extends AbstractView {
     
     const buildCategory = (item) => {
       let code_stack = new CodeStack(item["context"]);
-      item["payloads"].forEach( async (payload) => {
-        console.log({ payload });
+      Promise.all(item["payloads"].map( async (payload) => {
         let clipCode = new ClipCode(payload);
-        console.log({ clipCode });
         let el = await clipCode.getElement();
         code_stack.pushEl(el)
-      });
+      }));
       return code_stack.element();
     };
     
@@ -27,12 +25,9 @@ export default class extends AbstractView {
       resp.json().then( (data) => {
         let code_stack = new CodeStack("main");
         data.forEach( (item) => {
-          // let ctx = document.createElement("li");
-          // ctx.appendChild(buildCategory(item));
           code_stack.pushEl(buildCategory(item));
-          list_div.appendChild(code_stack.element());
-          // list.appendChild(ctx);
         });
+        list_div.appendChild(code_stack.element());
       });
     });
   }

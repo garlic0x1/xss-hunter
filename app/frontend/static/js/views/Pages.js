@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView.js";
+import CodeStack from "../components/CodeStack.js";
 import CollectedPage from "../components/CollectedPage.js";
 
 export default class extends AbstractView {
@@ -8,17 +9,17 @@ export default class extends AbstractView {
   }
   
   async doScript() {
-    let list = document.getElementById("pageList");
+    let list_div = document.getElementById("pageList");
     
     fetch("/api/pages").then( (resp) => {
       resp.json().then( (data) => {
-        data.forEach( async (item) => {
-          let li = document.createElement("li");
-          let collectedPage = new CollectedPage(item.id, item.time);
+        let code_stack = new CodeStack("Pages");
+        Promise.all(data.map( async (item) => {
+          let collectedPage = new CollectedPage(item.id, `${item.time}  :  ${item.uri}`);
           let pageElement = await collectedPage.getElement();
-          li.appendChild(pageElement);
-          list.appendChild(li);
-        });
+          code_stack.pushEl(pageElement);
+        }));
+        list_div.appendChild(code_stack.element());
       });
     });
   }
@@ -27,10 +28,7 @@ export default class extends AbstractView {
     return `
       <h1> Collected Pages </h1>
       <p> Posts made to callback URL ('/callback/:username') </p> 
-      <p>
-        <ul id="pageList"></ul>
-        <a href="/" data-link> View dashboard </a>
-      </p> 
+      <div id="pageList"></div>
     `;
   }
 }
