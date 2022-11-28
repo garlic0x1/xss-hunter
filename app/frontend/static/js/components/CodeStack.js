@@ -8,17 +8,21 @@ export default class extends AbstractComponent {
     super(null);
     let el = document.createElement("div");
     el.classList.add("code__stack");
-    let title = document.createElement("span");
+    let title = document.createElement("h3");
     title.innerText = name;
     el.appendChild(title);
     this.#element = el;
   }
   
-  push(text) {
+  push(name, text) {
     const div = document.createElement("div");
-    const el = document.createElement("span");
-    el.innerText = text;
-    div.appendChild(el);
+    const title = document.createElement("span");
+    const message = document.createElement("span");
+    title.innerText = `${name}:  `;
+    message.innerText = text;
+    div.appendChild(title);
+    div.appendChild(message);
+    div.appendChild(document.createElement("br"));
     div.appendChild(document.createElement("br"));
     this.#element.appendChild(div);
   }

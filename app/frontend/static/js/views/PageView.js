@@ -18,7 +18,7 @@ export default class extends AbstractView {
     Object.entries(data).forEach( (tuple) => {
       let key = tuple[0];
       let val = tuple[1];
-      code_stack.push(`${key}:  ${val}`);
+      code_stack.push(key, val);
     });
     
     console.log({ code_stack });
