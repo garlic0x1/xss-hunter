@@ -14,6 +14,13 @@ export default class extends AbstractComponent {
     this.#element = el;
   }
   
+  pushEl(el) {
+    const div = document.createElement("div");
+    div.appendChild(el);
+    this.#element.appendChild(this.#divider());
+    this.#element.appendChild(div);
+  }
+  
   push(name, text) {
     const div = document.createElement("div");
     const title = document.createElement("span");
@@ -22,8 +29,7 @@ export default class extends AbstractComponent {
     message.innerText = text;
     div.appendChild(title);
     div.appendChild(message);
-    div.appendChild(document.createElement("br"));
-    div.appendChild(document.createElement("br"));
+    this.#element.appendChild(this.#divider());
     this.#element.appendChild(div);
   }
   
@@ -31,13 +37,18 @@ export default class extends AbstractComponent {
     let top = null;
     if (this.element.childElementCount > 1) {
       top = this.#element.lastChild;
-      this.#element.remove(top);
+      this.#element.remove(this.#element.lastChild);
+      this.#element.remove(this.#element.lastChild);
     }
     return top;
   }
 
   element() {
     return this.#element;
+  }
+  
+  #divider() {
+    return document.createElement("hr");
   }
 }
 

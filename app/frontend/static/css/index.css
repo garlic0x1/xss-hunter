@@ -1,15 +1,44 @@
+:root {
+    --white: #ffffff;
+    --lilac: #dbbfef;
+    --lavender: #a4a0e8;
+    --comet: #5a5977;
+    --bossanova: #452859;
+    --midnight: #3b224c;
+    --revolver: #281733;
+    --silver: #cccccc;
+    --sirocco: #697C81;
+    --mint: #9ff28f;
+    --almond: #eccdba;
+    --chamois: #E8DCA0;
+    --honey: #efba5d;
+    --apricot: #f47868;
+    --lightning: #ffcd1c;
+    --delta: #6F44F0;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.code__stack::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.code__stack {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 .code__stack {
     font-family: monospace;
     font-size: 18px;
-    background: #4e4e4e;
-    color: #ffffff;
+    color: var(--silver);
+    border-style: solid;
     /* word-wrap: break-word; */
     box-decoration-break: clone;
     padding: .6rem .6rem .4rem .6rem;
     border-radius: .4rem;
     white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    overflow: scroll;
+    /* -webkit-overflow-scrolling: touch; */
     overflow-x: scroll;
     max-width: 100%;
     min-width: 100px;
@@ -18,7 +47,7 @@
 code {
     font-family: monospace;
     font-size: 18px;
-    background: #222222;
+    background: var(--comet);
     color: #eeeeee;
     /* word-wrap: break-word; */
     box-decoration-break: clone;
@@ -26,13 +55,14 @@ code {
     border-radius: .3rem;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
-    overflow: scroll;
     overflow-x: scroll;
     max-width: 100%;
     min-width: 100px;
 }
 
 body {
+    color: var(--silver);
+    background: var(--midnight);
     --nav-width: 200px;
     margin: 0 0 0 var(--nav-width);
     font-family: 'Quicksand', sans-serif;
@@ -45,14 +75,14 @@ body {
     left: 0;
     width: var(--nav-width);
     height: 100vh;
-    background: #222222;
+    background: var(--revolver);
 }
 
 .nav__link {
     display: block;
     padding: 12px 18px;
     text-decoration: none;
-    color: #eeeeee;
+    color: var(--silver);
     font-weight: 500;
 }
 
@@ -69,8 +99,4 @@ body {
     margin: 2em;
     line-height: 1.5;
     font-weight: 500;
-}
-
-a {
-    color: #009579;
 }

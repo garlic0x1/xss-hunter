@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView.js";
+import CodeStack from "../components/CodeStack.js";
 import ClipCode from "../components/ClipCode.js";
 
 export default class extends AbstractView {
@@ -8,37 +9,29 @@ export default class extends AbstractView {
   }
   
   async doScript() {
-    let list = document.getElementById("payloadList");
+    let list_div = document.getElementById("payloadList");
     
     const buildCategory = (item) => {
-      let categoryDiv = document.createElement("div");
-      let title = document.createElement("h3");
-      title.innerText = item["context"];
-      let payloadList = document.createElement("ul");
+      let code_stack = new CodeStack(item["context"]);
       item["payloads"].forEach( async (payload) => {
-          console.log({ payload });
-          let li = document.createElement("li");
-          let clipCode = new ClipCode(payload);
-          console.log({ clipCode });
-          let clipEl = await clipCode.getElement();
-          console.log({ clipEl });
-          li.appendChild(clipEl);
-          payloadList.appendChild(li);
+        console.log({ payload });
+        let clipCode = new ClipCode(payload);
+        console.log({ clipCode });
+        let el = await clipCode.getElement();
+        code_stack.pushEl(el)
       });
-      
-      categoryDiv.appendChild(title);
-      categoryDiv.appendChild(payloadList);
-      
-      console.log({ categoryDiv });
-      return categoryDiv;
+      return code_stack.element();
     };
     
     fetch("/api/payloads").then( (resp) => {
       resp.json().then( (data) => {
+        let code_stack = new CodeStack("main");
         data.forEach( (item) => {
-          let ctx = document.createElement("li");
-          ctx.appendChild(buildCategory(item));
-          list.appendChild(ctx);
+          // let ctx = document.createElement("li");
+          // ctx.appendChild(buildCategory(item));
+          code_stack.pushEl(buildCategory(item));
+          list_div.appendChild(code_stack.element());
+          // list.appendChild(ctx);
         });
       });
     });
@@ -47,12 +40,7 @@ export default class extends AbstractView {
   async getHtml() {
     return `
        <h1> Example Payloads </h1>
-       <p> Example payloads for loading the probe </p> 
-       <p> Click to copy to clipboard </p> 
-       <p>
-        <ul id="payloadList"></ul>
-        <a href="/" data-link> View dashboard </a>
-      </p> 
+        <div id="payloadList"></div>
     `;
   }
 }

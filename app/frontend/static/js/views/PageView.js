@@ -23,7 +23,7 @@ export default class extends AbstractView {
     
     console.log({ code_stack });
     
-    details.innerHTML = code_stack.element().outerHTML;
+    details.appendChild(code_stack.element());
   }
   
   async getHtml() {

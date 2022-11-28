@@ -1,9 +1,11 @@
 export default class {
+  #element;
+  
   constructor(params) {
     this.params = params;
   }
   
-  async getElement() {
-    return "";
+  async element() {
+    return this.#element;
   }
 }
