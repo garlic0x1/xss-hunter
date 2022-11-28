@@ -1,8 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import CodeStack from "../components/CodeStack.js";
 import CollectedPage from "../components/CollectedPage.js";
-import Button from "../components/Button.js";
-import navigateTo from "../index.js";
 
 export default class extends AbstractView {
   constructor(params) {
@@ -14,17 +12,20 @@ export default class extends AbstractView {
     let list_div = document.getElementById("pageList");
     
     fetch("/api/pages").then( (resp) => {
-      resp.json().then( (data) => {
-        let code_stack = new CodeStack("Pages");
-        Promise.all(data.map( async (item) => {
-          let collectedPage = new Button(`${item.time}  :  ${item.uri}`, () => {
-            navigateTo(`/pages/${item.id}`);
-          });
-          let pageElement = collectedPage.element();
-          code_stack.pushEl(pageElement);
-        }));
-        list_div.appendChild(code_stack.element());
-      });
+      if (resp.ok) {
+        resp.json().then( (data) => {
+          let code_stack = new CodeStack("Pages");
+          Promise.all(data.map( async (item) => {
+            let collectedPage = new CollectedPage(item.id, `${item.time}  :  ${item.uri}`);
+            let pageElement = await collectedPage.getElement();
+            code_stack.pushEl(pageElement);
+          }));
+          list_div.appendChild(code_stack.element());
+        });
+      } else {
+        window.localStorage.setItem("authenticated", false);
+        navigateTo("/login");
+      }
     });
   }
   
