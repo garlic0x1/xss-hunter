@@ -4,6 +4,6 @@ export default class {
   constructor() {}
   
   element() {
-    return this.#element;
+    return this.#element
   }
 }

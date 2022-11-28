@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import CodeStack from "../components/CodeStack.js";
+import CodeStack from "../containers/CodeStack.js";
 
 export default class extends AbstractView {
   constructor(params) {
@@ -11,14 +11,17 @@ export default class extends AbstractView {
   async doScript() {
     let details = document.getElementById("pageDetails");
     
-    let code_stack = new CodeStack("details");
+    let code_stack = new CodeStack("details", true);
     let resp = await fetch(`/api/pages/${this.params.id}`);
     let data = await resp.json();
 
     Object.entries(data).forEach( (tuple) => {
       let key = tuple[0];
       let val = tuple[1];
-      code_stack.push(key, val);
+      
+      let item = document.createElement("span");
+      item.innerText = `${key}  :  ${val}`;
+      code_stack.push(item);
     });
     
     console.log({ code_stack });

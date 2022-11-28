@@ -8,9 +8,10 @@ export default class extends AbstractComponent {
     this.pageId = pageId;
   }
   
-  async getElement() {
+  async element() {
     let el = document.createElement("div");
     let preview = document.createElement("span");
+    preview.classList.add("hover__button");
     preview.innerText = this.preview;
     el.appendChild(preview);
     el.addEventListener("click", async () => {

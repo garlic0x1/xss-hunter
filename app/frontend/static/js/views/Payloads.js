@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import CodeStack from "../components/CodeStack.js";
+import CodeStack from "../containers/CodeStack.js";
 import ClipCode from "../components/ClipCode.js";
 
 export default class extends AbstractView {
@@ -12,11 +12,11 @@ export default class extends AbstractView {
     let list_div = document.getElementById("payloadList");
     
     const buildCategory = (item) => {
-      let code_stack = new CodeStack(item["context"]);
+      let code_stack = new CodeStack(item["context"], true, true);
       Promise.all(item["payloads"].map( async (payload) => {
         let clipCode = new ClipCode(payload);
-        let el = await clipCode.getElement();
-        code_stack.pushEl(el)
+        let el = clipCode.element();
+        code_stack.push(el)
       }));
       return code_stack.element();
     };
@@ -26,7 +26,7 @@ export default class extends AbstractView {
         resp.json().then( (data) => {
           let code_stack = new CodeStack("main");
           data.forEach( (item) => {
-            code_stack.pushEl(buildCategory(item));
+            code_stack.push(buildCategory(item));
           });
           list_div.appendChild(code_stack.element());
         });

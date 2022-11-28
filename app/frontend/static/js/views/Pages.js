@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import CodeStack from "../components/CodeStack.js";
+import CodeStack from "../containers/CodeStack.js";
 import CollectedPage from "../components/CollectedPage.js";
 
 export default class extends AbstractView {
@@ -14,11 +14,11 @@ export default class extends AbstractView {
     fetch("/api/pages").then( (resp) => {
       if (resp.ok) {
         resp.json().then( (data) => {
-          let code_stack = new CodeStack("Pages");
+          let code_stack = new CodeStack("Pages", true);
           Promise.all(data.map( async (item) => {
             let collectedPage = new CollectedPage(item.id, `${item.time}  :  ${item.uri}`);
-            let pageElement = await collectedPage.getElement();
-            code_stack.pushEl(pageElement);
+            let pageElement = await collectedPage.element();
+            code_stack.push(pageElement);
           }));
           list_div.appendChild(code_stack.element());
         });
