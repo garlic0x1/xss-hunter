@@ -44,7 +44,7 @@ async fn main() -> anyhow::Result<()> {
     let opt = Opt::parse();
 
     // load env vars from .env
-    dotenv::dotenv().ok();
+    dotenv::dotenv();
 
     // set up logging
     if std::env::var("RUST_LOG").is_err() {

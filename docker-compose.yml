@@ -5,19 +5,32 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./db/
+    environment:
+      # change me
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=app
     volumes:
       - mysql-testing:/var/lib/mysql
-    ports: 
-      - 3306:3306
+    healthcheck:
+        test: mysqladmin ping -h localhost -u root --password=$$MYSQL_ROOT_PASSWORD
+        interval: 3s
+        timeout: 10s
+        retries: 15
   app:
+    depends_on:
+      mysql:
+        condition: service_healthy
     build:
       dockerfile: Dockerfile
       context: ./app/
     environment:
       # change these secrets before deploying
-      SESSION_KEY: ea7941810cfedbbdc00e26df5c70cc19080bcdf840d878bb3099a07ad4810a80b72e82e5e865f5cc57a263563661d0bb784b94f95041a8c8aa34e5d2ddb5bd5e
-      PUBLIC_URL: http://laptop.garlic:8080
-      DATABASE_URL: mysql://root:secret@mysql:3306/app     
+      # must be at least 128 bytes
+      - SESSION_KEY=ea7941810cfedbbdc00e26df5c70cc19080bcdf840d878bb3099a07ad4810a80b72e82e5e865f5cc57a263563661d0bb784b94f95041a8c8aa34e5d2ddb5bd5e
+      # set this to the url you are hosting at, it is used for payload and probe generation
+      - PUBLIC_URL=http://laptop.garlic
+      # mysql url (please change password)
+      - DATABASE_URL=mysql://root:secret@mysql:3306/app     
     ports: 
       - 80:8080
 
