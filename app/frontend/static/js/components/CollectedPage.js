@@ -8,7 +8,7 @@ export default class extends AbstractComponent {
     this.pageId = pageId;
   }
   
-  async getElement() {
+  async element() {
     let el = document.createElement("div");
     let preview = document.createElement("span");
     preview.innerText = this.preview;

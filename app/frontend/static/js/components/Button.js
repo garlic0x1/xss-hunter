@@ -1,19 +1,20 @@
 import AbstractComponent from "./AbstractComponent.js";
 
 export default class extends AbstractComponent {
-  constructor(code) {
+  constructor(text, action) {
     super(null);
-    this.code = code;
+    this.text = text;
+    this.action = action;
   }
-  
+
   element() {
     let el = document.createElement("div");
-    let codeBlock = document.createElement("code");
-    codeBlock.classList.add("clip__code");
-    codeBlock.innerText = this.code;
+    let codeBlock = document.createElement("span");
+    codeBlock.classList.add("hover__button");
+    codeBlock.innerText = this.text;
     el.appendChild(codeBlock);
     el.addEventListener("click", async () => {
-      await navigator.clipboard.writeText(this.code);
+      await this.action();
     });
     return el;
   }

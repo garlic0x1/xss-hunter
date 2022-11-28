@@ -15,7 +15,7 @@ export default class extends AbstractView {
       let code_stack = new CodeStack(item["context"]);
       Promise.all(item["payloads"].map( async (payload) => {
         let clipCode = new ClipCode(payload);
-        let el = await clipCode.getElement();
+        let el = clipCode.element();
         code_stack.pushEl(el)
       }));
       return code_stack.element();

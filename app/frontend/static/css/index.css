@@ -44,12 +44,11 @@
     min-width: 100px;
 }
 
-code {
+.clip__code {
     font-family: monospace;
     font-size: 18px;
     background: var(--comet);
-    color: #eeeeee;
-    /* word-wrap: break-word; */
+    color: var(--silver);
     box-decoration-break: clone;
     padding: .4rem .4rem .2rem .4rem;
     border-radius: .3rem;
@@ -59,6 +58,30 @@ code {
     max-width: 100%;
     min-width: 100px;
 }
+
+.clip__code:hover {
+    background: var(--revolver);
+}
+
+.hover__button {
+    font-family: monospace;
+    font-size: 18px;
+    font-family: monospace;
+    font-size: 18px;
+    color: var(--silver);
+    box-decoration-break: clone;
+    padding: .4rem .4rem .2rem .4rem;
+    border-radius: .3rem;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    overflow-x: scroll;
+}
+
+.hover__button:hover {
+    background: var(--delta);
+}
+
+
 
 body {
     color: var(--silver);
