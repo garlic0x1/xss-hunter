@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView.js";
+import CodeStack from "../components/CodeStack.js";
 
 export default class extends AbstractView {
   constructor(params) {
@@ -10,14 +11,23 @@ export default class extends AbstractView {
   async doScript() {
     let details = document.getElementById("pageDetails");
     
-    fetch(`/api/pages/${this.params.id}`).then( (resp) => {
-      resp.json().then( (data) => {
-        details.innerText = JSON.stringify(data);
-      });
+    let code_stack = new CodeStack("details");
+    let resp = await fetch(`/api/pages/${this.params.id}`);
+    let data = await resp.json();
+
+    Object.entries(data).forEach( (tuple) => {
+      let key = tuple[0];
+      let val = tuple[1];
+      code_stack.push(`${key}:  ${val}`);
     });
+    
+    console.log({ code_stack });
+    
+    details.innerHTML = code_stack.element().outerHTML;
   }
   
   async getHtml() {
+
     return `
       <h1> Collected Pages </h1>
       <p> Page details </p> 

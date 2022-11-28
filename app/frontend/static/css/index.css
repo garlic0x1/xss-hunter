@@ -1,3 +1,20 @@
+code__stack {
+    font-family: monospace;
+    font-size: 18px;
+    background: #4e4e4e;
+    color: #ffffff;
+    /* word-wrap: break-word; */
+    box-decoration-break: clone;
+    padding: .6rem .6rem .4rem .6rem;
+    border-radius: .4rem;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    overflow: scroll;
+    overflow-x: scroll;
+    max-width: 100%;
+    min-width: 100px;
+}
+
 code {
     font-family: monospace;
     font-size: 18px;
