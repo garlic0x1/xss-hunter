@@ -86,8 +86,8 @@
     background: var(--bossanova);
 }
 
-.delete__button:hover {
-    background: var(--apricot);
+.button:hover {
+    background: var(--delta);
 }
 
 .delete__button {
@@ -96,6 +96,9 @@
     background: var(--sirocco);
 }
 
+.delete__button:hover {
+    background: var(--apricot);
+}
 
 
 body {
