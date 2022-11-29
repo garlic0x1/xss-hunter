@@ -1,4 +1,4 @@
-import Dashboard from "./views/Dashboard.js";;
+import Welcome from "./views/Welcome.js";;
 import Settings from "./views/Settings.js";
 import Payloads from "./views/Payloads.js";
 import Pages from "./views/Pages.js";
@@ -39,7 +39,7 @@ async function router() {
   
   // /posts/:id
   const routes = [
-    { path: "/", view: Dashboard },
+    { path: "/", view: Welcome },
     { path: "/payloads", view: Payloads },
     { path: "/pages", view: Pages },
     { path: "/pages/:id", view: PageView },

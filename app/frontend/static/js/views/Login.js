@@ -116,7 +116,8 @@ function loadLoginScript() {
           console.log({ resp });
           if (resp.ok) {
             window.localStorage.setItem("authenticated", true);
-            navigateTo("/");
+            console.log("navigating to pages");
+            navigateTo("/pages");
           } else {
             setLoginFormMessage(loginForm, "error", "Invalid username/password combination");
           }
@@ -171,7 +172,7 @@ function loadLoginScript() {
                 console.log({ resp });
                 if (resp.ok) {
                   window.localStorage.setItem("authenticated", true);
-                  navigateTo("/");
+                  navigateTo("/pages");
                 } else {
                   setLoginFormMessage(loginForm, "error", "Account created, login failed");
                 }

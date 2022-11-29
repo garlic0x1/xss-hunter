@@ -6,6 +6,14 @@ CREATE TABLE users
 	primary key(id)
 );
 
+CREATE TABLE scripts
+(
+	id INTEGER AUTO_INCREMENT,
+	username varchar(64),
+	uri varchar(256),
+	primary key(id)
+);
+
 CREATE TABLE pages
 (
 	id INTEGER AUTO_INCREMENT,

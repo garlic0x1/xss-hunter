@@ -79,7 +79,9 @@ async fn main() -> anyhow::Result<()> {
         .route("/payloads", get(data::get_payloads))
         .route("/pages", get(data::get_pages))
         .route("/pages/:id", get(data::get_page))
-        .route("/pages/:id", delete(data::delete_page));
+        .route("/pages/:id", delete(data::delete_page))
+        .route("/scripts", get(data::get_scripts))
+        .route("/scripts", post(data::add_script));
 
     let callback_router = axum::Router::new()
         .route("/:user", get(callback::probe))

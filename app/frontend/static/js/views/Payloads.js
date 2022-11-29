@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import CodeStack from "../containers/CodeStack.js";
 import ClipCode from "../components/ClipCode.js";
+import navigateTo from "../index.js";
 
 export default class extends AbstractView {
   constructor(params) {

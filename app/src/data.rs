@@ -1,9 +1,54 @@
 use crate::State;
-use axum::extract::{Extension, Path};
+use axum::extract::{Extension, Json, Path};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum_sessions::extractors::ReadableSession;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+
+pub async fn get_scripts(
+    Extension(state): Extension<State>,
+    session: ReadableSession,
+) -> impl IntoResponse {
+    let username = session.get::<String>("username").unwrap();
+
+    let rows: Vec<(String,)> = sqlx::query_as("SELECT uri FROM scripts WHERE username=?")
+        .bind(username)
+        .fetch_all(&state.db_pool)
+        .await
+        .unwrap();
+
+    let data: Vec<String> = rows.iter().map(|(uri,)| uri.to_owned()).collect();
+
+    (
+        [("content-type", "application/json")],
+        serde_json::to_string(&data).unwrap(),
+    )
+}
+
+#[derive(Deserialize)]
+pub struct Script {
+    uri: String,
+}
+
+pub async fn add_script(
+    Extension(state): Extension<State>,
+    Json(post_data): Json<Script>,
+    session: ReadableSession,
+) -> impl IntoResponse {
+    let username = session.get::<String>("username").unwrap();
+
+    let res = sqlx::query("INSERT INTO scripts (username, uri) VALUES (?, ?)")
+        .bind(username)
+        .bind(post_data.uri)
+        .execute(&state.db_pool)
+        .await;
+
+    if res.is_ok() {
+        StatusCode::OK
+    } else {
+        StatusCode::BAD_REQUEST
+    }
+}
 
 // give the client payloads in JSON
 pub async fn get_payloads(

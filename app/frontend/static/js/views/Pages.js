@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import CodeStack from "../containers/CodeStack.js";
 import CollectedPage from "../components/CollectedPage.js";
+import navigateTo from "../index.js";
 
 export default class extends AbstractView {
   constructor(params) {
