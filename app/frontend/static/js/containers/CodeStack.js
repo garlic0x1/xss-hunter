@@ -47,7 +47,7 @@ export default class extends AbstractContainer {
       title.classList.add("button", "text__box");
       title.addEventListener("click", () => {
         Array.from(this.#element.childNodes.entries())
-          .filter( ([i, val]) =>i > 0 )
+          .filter( ([i, val]) => (i > 0) )
           .forEach( ([i, val]) => {
             if (val.style.display === "none")
               val.style.display = "block";
