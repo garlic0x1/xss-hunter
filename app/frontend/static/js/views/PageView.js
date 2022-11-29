@@ -12,6 +12,7 @@ export default class extends AbstractView {
     
     let headers = new DomStack("headers", true, true);
     let details = new DomStack("details", true, true);
+    let image = new DomStack("screenshot", true, true);
 
     fetch(`/api/pages/${this.params.id}`).then( resp => {
       resp.json().then( data => {
@@ -19,7 +20,15 @@ export default class extends AbstractView {
           let key = tuple[0];
           let val = tuple[1];
           
-          if (key === "headers") {
+          if (key === "id") {
+            fetch(`/api/image/${val}`).then( resp => {
+              resp.text().then( text => {
+                let img = document.createElement("img");
+                img.setAttribute("src", text);
+                image.push(img);
+              });
+            });
+          } else if (key === "headers") {
             let parsed = JSON.parse(val);
             Object.entries(parsed).forEach( (tuple) => {
               let item = document.createElement("span");
@@ -33,6 +42,8 @@ export default class extends AbstractView {
           }
         });
         
+        el.appendChild(image.element());
+        el.appendChild(document.createElement("br"));
         el.appendChild(headers.element());
         el.appendChild(document.createElement("br"));
         el.appendChild(details.element());

@@ -1,8 +1,9 @@
+mod api;
 mod auth;
 mod auxiliary;
 mod callback;
-mod data;
 
+use api::*;
 use axum::routing::{delete, get, get_service, post};
 use axum::{Extension, Router};
 use clap::Parser;
@@ -76,13 +77,13 @@ async fn main() -> anyhow::Result<()> {
     .handle_error(auxiliary::handle_error);
 
     let api_router = axum::Router::new()
-        .route("/payloads", get(data::get_payloads))
-        .route("/pages", get(data::get_pages))
-        .route("/pages/:id", get(data::get_page))
-        .route("/pages/:id", delete(data::delete_page))
-        .route("/scripts", get(data::get_scripts))
-        .route("/scripts", post(data::add_script))
-        .route("/scripts/:id", delete(data::delete_script));
+        .route("/payloads", get(payloads::get_payloads))
+        .route("/pages", get(pages::get_pages))
+        .route("/pages/:id", get(pages::get_page))
+        .route("/pages/:id", delete(pages::delete_page))
+        .route("/scripts", get(scripts::get_scripts))
+        .route("/scripts", post(scripts::add_script))
+        .route("/scripts/:id", delete(scripts::delete_script));
 
     let callback_router = axum::Router::new()
         .route("/:user", get(callback::probe))
