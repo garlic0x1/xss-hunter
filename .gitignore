@@ -1,2 +1,4 @@
 /app/target
 /app/.env
+/fileserver/target
+/fileserver/.env

@@ -21,7 +21,7 @@ export default class extends AbstractView {
           let val = tuple[1];
           
           if (key === "id") {
-            fetch(`/api/image/${val}`).then( resp => {
+            fetch(`/api/images/${val}`).then( resp => {
               resp.text().then( text => {
                 let img = document.createElement("img");
                 img.setAttribute("src", text);

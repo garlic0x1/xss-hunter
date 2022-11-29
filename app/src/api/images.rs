@@ -1,9 +1,9 @@
 use crate::State;
-use axum::extract::{Extension, Json, Path};
+use axum::extract::{Extension, Path};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum_sessions::extractors::ReadableSession;
-use serde::{Deserialize, Serialize};
+// use serde::{Deserialize, Serialize};
 
 pub async fn get_image(
     Extension(state): Extension<State>,
@@ -20,9 +20,19 @@ pub async fn get_image(
 
     if username != row.0 {
         // user doesnt own this record
-        return StatusCode::UNAUTHORIZED;
+        return StatusCode::UNAUTHORIZED.into_response();
     }
 
     // get image
-    
+    reqwest::get(format!(
+        "{}/{}",
+        std::env::var("FILESERVER_URL").unwrap(),
+        path
+    ))
+    .await
+    .unwrap()
+    .text()
+    .await
+    .unwrap()
+    .into_response()
 }
