@@ -68,7 +68,6 @@
     border-radius: .3rem;
     white-space: nowrap;
     max-width: 100%;
-    min-width: 100px;
     box-decoration-break: clone;
 }
 
@@ -87,8 +86,14 @@
     background: var(--bossanova);
 }
 
-.button:hover {
-    background: var(--delta);
+.delete__button:hover {
+    background: var(--apricot);
+}
+
+.delete__button {
+    display: inline-block;
+    float: right;
+    background: var(--sirocco);
 }
 
 

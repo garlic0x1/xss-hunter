@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import CodeStack from "../containers/CodeStack.js";
-import Button from "../components/Button.js";
+import DeleteButton from "../components/DeleteButton.js";
 import navigateTo from "../index.js";
 
 export default class extends AbstractView {
@@ -18,15 +18,22 @@ export default class extends AbstractView {
         resp.json().then ( data => {
           let code_stack = new CodeStack("custom scripts", true, true);
           
-          Promise.all(data.map( async (uri) => {
-            // let script_item = new Button(uri, () => {
-            //   window.open(uri, '_blank');
-            // });
-            // code_stack.push(script_item.element());
-            let script_item = document.createElement("span");
-            script_item.classList.add("text__box");
-            script_item.innerText = uri;
-            code_stack.push(script_item);
+          Promise.all(data.map( async (item) => {
+            let script = document.createElement("div");
+            let text = document.createElement("span");
+            text.style.display = "inline-block";
+            let delete_button = new DeleteButton("delete", () => {
+              fetch(`/api/scripts/${item.id}`, {
+                method: "DELETE",
+              }).then( resp => {
+                navigateTo("/settings");
+              });
+            });
+            text.classList.add("text__box");
+            text.innerText = item.uri;
+            script.appendChild(text);
+            script.appendChild(delete_button.element());
+            code_stack.push(script);
           }));
           
           script_list.appendChild(code_stack.element());
