@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import CodeStack from "../containers/CodeStack.js";
+import DomStack from "../containers/DomStack.js";
 import CollectedPage from "../components/CollectedPage.js";
 import navigateTo from "../index.js";
 
@@ -15,7 +15,7 @@ export default class extends AbstractView {
     fetch("/api/pages").then( (resp) => {
       if (resp.ok) {
         resp.json().then( (data) => {
-          let code_stack = new CodeStack("Pages", true);
+          let code_stack = new DomStack("Pages", true);
           Promise.all(data.map( async (item) => {
             let collectedPage = new CollectedPage(item.id, `${item.time}  :  ${item.uri}`);
             let pageElement = await collectedPage.element();

@@ -40,10 +40,8 @@ export default class extends AbstractView {
             password
           })
         }).then( (resp) => {
-          console.log({ resp });
           if (resp.ok) {
             window.localStorage.setItem("authenticated", true);
-            console.log("navigating to pages");
             navigateTo("/pages");
           } else {
             setLoginFormMessage(loginForm, "error", "Invalid username/password combination");
@@ -96,7 +94,6 @@ export default class extends AbstractView {
                   password
                 })
               }).then( (resp) => {
-                console.log({ resp });
                 if (resp.ok) {
                   window.localStorage.setItem("authenticated", true);
                   navigateTo("/pages");

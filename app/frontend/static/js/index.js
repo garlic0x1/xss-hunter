@@ -1,5 +1,5 @@
 import Welcome from "./views/Welcome.js";;
-import Settings from "./views/Settings.js";
+import Scripts from "./views/Scripts.js";
 import Payloads from "./views/Payloads.js";
 import Pages from "./views/Pages.js";
 import PageView from "./views/PageView.js";
@@ -29,17 +29,13 @@ export default function navigateTo(url) {
 async function router() {
   updateNavBar();
   
-  // debug log authState
-  let state = localStorage.getItem("authenticated");
-  console.log({ state });
-  
   // /posts/:id
   const routes = [
     { path: "/", view: Welcome },
     { path: "/payloads", view: Payloads },
     { path: "/pages", view: Pages },
     { path: "/pages/:id", view: PageView },
-    { path: "/settings", view: Settings },
+    { path: "/settings", view: Scripts },
     { path: "/login", view: Login },
     { path: "/logout", view: Logout },
   ];

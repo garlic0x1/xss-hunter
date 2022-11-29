@@ -1,16 +1,17 @@
 import AbstractView from "./AbstractView.js";
-import CodeStack from "../containers/CodeStack.js";
+import DomStack from "../containers/DomStack.js";
 
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    console.log({ params });
-    this.set_title("Collected Pages");
+    this.set_title("Collected Page");
   }
   
   update() {
-    let details = document.getElementById("pageDetails");
-    let code_stack = new CodeStack("details", true);
+    let el = document.getElementById("pageDetails");
+    
+    let headers = new DomStack("headers", true, true);
+    let details = new DomStack("details", true, true);
 
     fetch(`/api/pages/${this.params.id}`).then( resp => {
       resp.json().then( data => {
@@ -18,12 +19,23 @@ export default class extends AbstractView {
           let key = tuple[0];
           let val = tuple[1];
           
-          let item = document.createElement("span");
-          item.innerText = `${key}  :  ${val}`;
-          code_stack.push(item);
+          if (key === "headers") {
+            let parsed = JSON.parse(val);
+            Object.entries(parsed).forEach( (tuple) => {
+              let item = document.createElement("span");
+              item.innerText = `${tuple[0]}  :  ${tuple[1]}`;
+              headers.push(item);
+            });
+          } else {
+            let item = document.createElement("span");
+            item.innerText = `${key}  :  ${val}`;
+            details.push(item);
+          }
         });
         
-        details.appendChild(code_stack.element());
+        el.appendChild(headers.element());
+        el.appendChild(document.createElement("br"));
+        el.appendChild(details.element());
       });
     });
   }

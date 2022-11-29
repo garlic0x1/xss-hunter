@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import CodeStack from "../containers/CodeStack.js";
+import DomStack from "../containers/DomStack.js";
 import ClipCode from "../components/ClipCode.js";
 import navigateTo from "../index.js";
 
@@ -13,7 +13,7 @@ export default class extends AbstractView {
     let list_div = document.getElementById("payloadList");
     
     const buildCategory = (item) => {
-      let code_stack = new CodeStack(item["context"], true, true);
+      let code_stack = new DomStack(item["context"], true, true);
       Promise.all(item["payloads"].map( async (payload) => {
         let clipCode = new ClipCode(payload);
         let el = clipCode.element();
@@ -25,7 +25,7 @@ export default class extends AbstractView {
     fetch("/api/payloads").then( (resp) => {
       if (resp.ok) {
         resp.json().then( (data) => {
-          let code_stack = new CodeStack("main");
+          let code_stack = new DomStack("context");
           data.forEach( (item) => {
             code_stack.push(buildCategory(item));
           });

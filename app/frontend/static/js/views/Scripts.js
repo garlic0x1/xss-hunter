@@ -1,12 +1,12 @@
 import AbstractView from "./AbstractView.js";
-import CodeStack from "../containers/CodeStack.js";
+import DomStack from "../containers/DomStack.js";
 import DeleteButton from "../components/DeleteButton.js";
 import navigateTo from "../index.js";
 
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.set_title("Settings");
+    this.set_title("Chainload Scripts");
   }
   
   update() {
@@ -16,7 +16,7 @@ export default class extends AbstractView {
     fetch("/api/scripts").then( resp => {
       if (resp.ok) {
         resp.json().then ( data => {
-          let code_stack = new CodeStack("custom scripts", true, true);
+          let code_stack = new DomStack("custom scripts", true, true);
           
           Promise.all(data.map( async (item) => {
             let script = document.createElement("div");
@@ -61,7 +61,7 @@ export default class extends AbstractView {
   
   html() {
     return `
-      <h1> Settings </h1>
+      <h1> Chainload Scripts </h1>
 
       <div id="customScripts"></div><br>
 
@@ -72,7 +72,7 @@ export default class extends AbstractView {
             <input type="text" class="form__input" autofocus placeholder="script uri">
             <div class="form__input-error-message"></div>
           </div>
-          <button class="form__button" type="submit">Add script source</button>
+          <button class="form__button" type="submit">Add script URI</button>
         </form>
       </div>
     `;
