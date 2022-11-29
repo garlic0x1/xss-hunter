@@ -11,7 +11,8 @@ export default class extends AbstractComponent {
   async element() {
     let el = document.createElement("div");
     let preview = document.createElement("span");
-    preview.classList.add("hover__button");
+    preview.classList.add("button");
+    preview.classList.add("text__box");
     preview.innerText = this.preview;
     el.appendChild(preview);
     el.addEventListener("click", async () => {

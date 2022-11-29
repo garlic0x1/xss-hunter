@@ -6,10 +6,10 @@ import navigateTo from "../index.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Collected Pages");
+    this.set_title("Collected Pages");
   }
   
-  async doScript() {
+  async update() {
     let list_div = document.getElementById("pageList");
     
     fetch("/api/pages").then( (resp) => {
@@ -30,7 +30,7 @@ export default class extends AbstractView {
     });
   }
   
-  async getHtml() {
+  async html() {
     return `
       <h1> Collected Pages </h1>
       <p> Posts made to callback URL ('/callback/:username') </p> 

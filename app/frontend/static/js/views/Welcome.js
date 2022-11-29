@@ -3,10 +3,10 @@ import AbstractView from "./AbstractView.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Welcome");
+    this.set_title("Welcome");
   }
   
-  async getHtml() {
+  html() {
     return `
        <h1> Blind XSS listener </h1>
        <p> [site info] </p>

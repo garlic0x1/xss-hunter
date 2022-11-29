@@ -4,83 +4,10 @@ import navigateTo from "../index.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Login");
+    this.set_title("Login");
   }
   
-  async doScript() {
-    loadLoginScript();
-  }
-  
-  async getHtml() {
-    
-    return `
-      <link rel="stylesheet" href="/static/css/login.css">
-      <div class="container">
-        <form class="form" id="login">
-          <h1 class="form__title">Login</h1>
-          <div class="form__message form__message--error"></div>
-          <div class="form__input-group">
-            <input type="text" class="form__input" autofocus placeholder="Username">
-            <div class="form__input-error-message"></div>
-          </div>
-          <div class="form__input-group">
-            <input type="password" class="form__input" autofocus placeholder="Password">
-            <div class="form__input-error-message"></div>
-          </div>
-          <button class="form__button" type="submit">Continue</button>
-          <p class="form__text">
-            <a class="form__link" href="./" id="linkCreateAccount">Don't have an account? Sign up</a>
-          </p>
-        </form>
-        <form class="form form--hidden" id="createAccount">
-          <h1 class="form__title">Create Account</h1>
-          <div class="form__message form__message--error"></div>
-          <div class="form__input-group">
-            <input type="text" id="signupUsername" class="form__input" autofocus placeholder="Username">
-            <div class="form__input-error-message"></div>
-          </div>
-          <div class="form__input-group">
-            <input type="password" class="form__input" autofocus placeholder="Password">
-            <div class="form__input-error-message"></div>
-          </div>
-          <div class="form__input-group">
-            <input type="password" class="form__input" autofocus placeholder="Confirm password">
-            <div class="form__input-error-message"></div>
-          </div>
-          <button class="form__button" type="submit">Continue</button>
-          <p class="form__text">
-            <a class="form__link" href="./" id="linkLogin">Already have an account? Log in</a>
-          </p>
-        </form>
-      </div>
-    `;
-  }
-}
-
-// private funcs
-
-function setLoginFormMessage(formElement, type, message) {
-    const messageElement = formElement.querySelector(".form__message");
-
-    messageElement.textContent = message;
-    messageElement.classList.remove("form__message--success", "form__message--error");
-    messageElement.classList.add(`form__message--${type}`);
-}
-
-function setLoginInputError(inputElement, message) {
-    inputElement.classList.add("form__input--error");
-    inputElement.parentElement.querySelector(".form__input-error-message").textContent = message;
-}
-
-function clearLoginInputError(inputElement) {
-    inputElement.classList.remove("form__input--error");
-    inputElement.parentElement.querySelector(".form__input-error-message").textContent = "";
-}
-
-function loadLoginScript() {
-  console.log(
-    "loginscript Load"
-  );
+  update() {
     const loginForm = document.querySelector("#login");
     const createAccountForm = document.querySelector("#createAccount");
 
@@ -197,4 +124,70 @@ function loadLoginScript() {
             clearLoginInputError(inputElement);
         });
     }); 
+  }
+  
+  html() {
+    return `
+    <div class="center">
+    <div class="form__box">
+      <form class="form" id="login">
+        <h1 class="form__title">Login</h1>
+        <div class="form__message form__message--error"></div>
+        <div class="form__input-group">
+          <input type="text" class="form__input" autofocus placeholder="Username">
+          <div class="form__input-error-message"></div>
+        </div>
+        <div class="form__input-group">
+          <input type="password" class="form__input" autofocus placeholder="Password">
+          <div class="form__input-error-message"></div>
+        </div>
+        <button class="form__button" type="submit">Continue</button>
+        <p class="form__text">
+          <a class="form__link" href="./" id="linkCreateAccount">Don't have an account? Sign up</a>
+        </p>
+      </form>
+
+      <form class="form form--hidden" id="createAccount">
+        <h1 class="form__title">Create Account</h1>
+        <div class="form__message form__message--error"></div>
+        <div class="form__input-group">
+          <input type="text" id="signupUsername" class="form__input" autofocus placeholder="Username">
+          <div class="form__input-error-message"></div>
+        </div>
+        <div class="form__input-group">
+          <input type="password" class="form__input" autofocus placeholder="Password">
+          <div class="form__input-error-message"></div>
+        </div>
+        <div class="form__input-group">
+          <input type="password" class="form__input" autofocus placeholder="Confirm password">
+          <div class="form__input-error-message"></div>
+        </div>
+        <button class="form__button" type="submit">Continue</button>
+        <p class="form__text">
+          <a class="form__link" href="./" id="linkLogin">Already have an account? Log in</a>
+        </p>
+      </form>
+    </div>
+    </div>`;
+  }
+}
+
+// private funcs
+
+function setLoginFormMessage(formElement, type, message) {
+    const messageElement = formElement.querySelector(".form__message");
+
+    messageElement.textContent = message;
+    messageElement.classList.remove("form__message--success", "form__message--error");
+    messageElement.classList.add(`form__message--${type}`);
+}
+
+function setLoginInputError(inputElement, message) {
+    inputElement.classList.add("form__input--error");
+    inputElement.parentElement.querySelector(".form__input-error-message").textContent = message;
+}
+
+function clearLoginInputError(inputElement) {
+    inputElement.classList.remove("form__input--error");
+    inputElement.parentElement.querySelector(".form__input-error-message").textContent = "";
 }

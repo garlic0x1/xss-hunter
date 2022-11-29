@@ -6,10 +6,10 @@ import navigateTo from "../index.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Settings");
+    this.set_title("Settings");
   }
   
-  async doScript() {
+  update() {
     let script_list = document.getElementById("customScripts");
     let submit_script = document.getElementById("submitForm");
     
@@ -19,10 +19,14 @@ export default class extends AbstractView {
           let code_stack = new CodeStack("custom scripts", true, true);
           
           Promise.all(data.map( async (uri) => {
-            let script_item = new Button(uri, () => {
-              window.open(uri, '_blank');
-            });
-            code_stack.push(script_item.element());
+            // let script_item = new Button(uri, () => {
+            //   window.open(uri, '_blank');
+            // });
+            // code_stack.push(script_item.element());
+            let script_item = document.createElement("span");
+            script_item.classList.add("text__box");
+            script_item.innerText = uri;
+            code_stack.push(script_item);
           }));
           
           script_list.appendChild(code_stack.element());
@@ -42,27 +46,26 @@ export default class extends AbstractView {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ uri })
       }).then( resp => {
+        navigateTo("/settings");
         // handle errors possibly
       });
     });
   }
   
-  async getHtml() {
+  html() {
     return `
-      <h1> Settings html </h1>
-      <p> lorem ipsum </p> 
-      <div id="customScripts"></div>
+      <h1> Settings </h1>
 
-      <link rel="stylesheet" href="/static/css/login.css">
-      <div class="container">
+      <div id="customScripts"></div><br>
+
+      <div class="element__box">
         <form class="form" id="submitForm">
-          <h1 class="form__title">add script</h1>
           <div class="form__message form__message--error"></div>
           <div class="form__input-group">
             <input type="text" class="form__input" autofocus placeholder="script uri">
             <div class="form__input-error-message"></div>
           </div>
-          <button class="form__button" type="submit">Continue</button>
+          <button class="form__button" type="submit">Add script source</button>
         </form>
       </div>
     `;

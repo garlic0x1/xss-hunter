@@ -5,32 +5,30 @@ export default class extends AbstractView {
   constructor(params) {
     super(params);
     console.log({ params });
-    this.setTitle("Collected Pages");
+    this.set_title("Collected Pages");
   }
   
-  async doScript() {
+  update() {
     let details = document.getElementById("pageDetails");
-    
     let code_stack = new CodeStack("details", true);
-    let resp = await fetch(`/api/pages/${this.params.id}`);
-    let data = await resp.json();
 
-    Object.entries(data).forEach( (tuple) => {
-      let key = tuple[0];
-      let val = tuple[1];
-      
-      let item = document.createElement("span");
-      item.innerText = `${key}  :  ${val}`;
-      code_stack.push(item);
+    fetch(`/api/pages/${this.params.id}`).then( resp => {
+      resp.json().then( data => {
+        Object.entries(data).forEach( (tuple) => {
+          let key = tuple[0];
+          let val = tuple[1];
+          
+          let item = document.createElement("span");
+          item.innerText = `${key}  :  ${val}`;
+          code_stack.push(item);
+        });
+        
+        details.appendChild(code_stack.element());
+      });
     });
-    
-    console.log({ code_stack });
-    
-    details.appendChild(code_stack.element());
   }
   
-  async getHtml() {
-
+  html() {
     return `
       <h1> Collected Page </h1>
       <div id="pageDetails"></div>

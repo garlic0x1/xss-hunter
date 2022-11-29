@@ -4,32 +4,35 @@ import navigateTo from "../index.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Dashboard");
+    this.set_title("Dashboard");
   }
   
-  async doScript() {
-    loadLogoutScript();
+  update() {
+    const logoutForm = document.querySelector("#logout");
+    
+    logoutForm.addEventListener("submit", e => {
+      e.preventDefault();
+      fetch("/auth/logout").then( (resp) => {
+        if (resp.ok) {
+          window.localStorage.setItem("authenticated", false);
+          navigateTo("/login");
+        } else {
+          console.log("something went wrong...");
+        }
+      });
+    });
   }
   
-  async getHtml() {
+  html() {
     return `
-      <link rel="stylesheet" href="/static/css/login.css">
-      <h1> Are you sure you want to log out? </h1>
+    <div class="center">
+    <div class="form__box">
+      <h1 class="form__title"> Are you sure? </h1>
       <form class="form" id="logout">
         <button class="form__button" type="submit">Log out</button>
       </form> 
+    </div>
+    </div>
     `;
   }
-}
-
-function loadLogoutScript() {
-  const logoutForm = document.querySelector("#logout");
-  
-  logoutForm.addEventListener("submit", e => {
-    e.preventDefault();
-    fetch("/auth/logout").then( (resp) => {
-      window.localStorage.setItem("authenticated", false);
-      navigateTo("/login");
-    });
-  });
 }

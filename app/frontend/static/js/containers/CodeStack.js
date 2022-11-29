@@ -14,6 +14,7 @@ export default class extends AbstractContainer {
     this.foldable = foldable;
 
     this.#element.classList.add("code__stack");
+    this.#element.classList.add("element__box");
     this.#element.appendChild(this.#title());
   }
   
@@ -43,7 +44,7 @@ export default class extends AbstractContainer {
     title.innerText = this.name;
 
     if (this.foldable) {
-      title.classList.add("hover__button");
+      title.classList.add("button", "text__box");
       title.addEventListener("click", () => {
         Array.from(this.#element.childNodes.entries())
           .filter( ([i, val]) =>i > 0 )

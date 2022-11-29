@@ -6,10 +6,10 @@ import navigateTo from "../index.js";
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle("Example Payloads");
+    this.set_title("Example Payloads");
   }
   
-  async doScript() {
+  update() {
     let list_div = document.getElementById("payloadList");
     
     const buildCategory = (item) => {
@@ -38,7 +38,7 @@ export default class extends AbstractView {
     });
   }
   
-  async getHtml() {
+  html() {
     return `
        <h1> Example Payloads </h1>
         <div id="payloadList"></div>

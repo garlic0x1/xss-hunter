@@ -16,10 +16,6 @@ const getParams = match => {
   const values = match.result.slice(1);
   const keys = Array.from(match.route.path
     .matchAll(/:(\w+)/g)).map(result => result[1]);
-  
-  // console.log(Array.from(match.route.path
-  //   .matchAll(/:(\w+)/g)));
-  
   return Object.fromEntries(keys.map((key, i) => {
     return [key, values[i]];
   }));
@@ -67,11 +63,11 @@ async function router() {
   
   const view = new match.route.view(getParams(match));
   
-  document.querySelector("#app").innerHTML = await view.getHtml();
+  document.querySelector("#app").innerHTML = await view.html();
   
   // if the view needs actions after loading do them
   try {
-    view.doScript();
+    view.update();
   } catch {}
 };
 
@@ -89,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function updateNavBar() {
-  console.log("updating navbar");
   let authenticated = window.localStorage.getItem("authenticated");
   
   let reqAuth = Array.from(document.getElementsByClassName("req__auth"));
@@ -97,17 +92,17 @@ function updateNavBar() {
   
   if (authenticated === "true") {
     reqAuth.forEach( (el) => {
-      el.classList.remove("nav__link--hidden");
+      el.classList.remove("hidden");
     });
     noAuth.forEach( (el) => {
-      el.classList.add("nav__link--hidden");
+      el.classList.add("hidden");
     });
   } else {
     reqAuth.forEach( (el) => {
-      el.classList.add("nav__link--hidden");
+      el.classList.add("hidden");
     });
     noAuth.forEach( (el) => {
-      el.classList.remove("nav__link--hidden");
+      el.classList.remove("hidden");
     });
   }
 }
