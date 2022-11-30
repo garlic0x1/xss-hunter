@@ -2,9 +2,7 @@ version: "3.7"
 
 services:
   mysql:
-    build:
-      dockerfile: Dockerfile
-      context: ./db/
+    image: garlic0x1/xss-hunter-mysql
     environment:
       # change me
       - MYSQL_ROOT_PASSWORD=secret
@@ -17,16 +15,12 @@ services:
         timeout: 10s
         retries: 15
   fileserver:
-    build:
-      dockerfile: Dockerfile
-      context: ./fileserver/
+    image: garlic0x1/xss-hunter-fileserver
   app:
     depends_on:
       mysql:
         condition: service_healthy
-    build:
-      dockerfile: Dockerfile
-      context: ./app/
+    image: garlic0x1/xss-hunter-app:v1
     environment:
       # change these secrets before deploying
       # must be at least 128 bytes

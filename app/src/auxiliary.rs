@@ -2,6 +2,13 @@ use std::collections::HashMap;
 
 use axum::http::HeaderMap;
 
+pub fn db_init() -> anyhow::Result<()> {
+    // not ok
+    // let res = sqlx::query_file_unchecked!("sql/schema.sql");
+
+    Ok(())
+}
+
 pub fn db_connect() -> Result<sqlx::Pool<sqlx::MySql>, sqlx::Error> {
     let url = std::env::var("DATABASE_URL").unwrap();
 

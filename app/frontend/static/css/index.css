@@ -183,6 +183,7 @@ body {
     border: 1px solid #dddddd;
     outline: none;
     background: var(--silver);
+    color: var(--apricot);
     transition: background 0.2s, border-color 0.2s;
 }
 
