@@ -1,6 +1,6 @@
-import { buildDomVec } from "../containers/dom_vec.js";
-import { chainloadScript } from "../components/CollectedPage.js";
-import { navigateTo, gotoLogin } from "../auxiliary/navigation.js";
+import { buildDomVec } from "../dom_vec.js";
+import { chainloadScript } from "../components.js";
+import { navigateTo, gotoLogin } from "../navigation.js";
 import { buildElement } from "../builder.js";
 
 export function scripts(_params) {

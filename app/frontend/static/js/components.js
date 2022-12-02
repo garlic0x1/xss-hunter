@@ -1,6 +1,5 @@
-import { navigateTo }  from "../auxiliary/navigation.js";
-import { deleteButton } from "./DeleteButton.js";
-import { buildElement } from "../builder.js";
+import { buildElement } from "./builder.js";
+import { navigateTo }  from "./navigation.js";
 
 export function chainloadScript(script_id, uri) {
   return buildElement("div")
@@ -43,5 +42,33 @@ export function collectedPage(page_id, preview) {
           navigateTo("/pages");
         });
       }))
+    .build();
+}
+
+export function button(text, action) {
+  return buildElement("div")
+    .withClasses(["button", "text__box"])
+    .withText(text)
+    .withEventListener("click", action)
+    .build();
+}
+
+export function deleteButton(text, fn) {
+  return buildElement("span")
+    .withClasses(["delete__button", "text__box"])
+    .withText(text)
+    .withEventListener("click", fn)
+    .build();
+}
+
+export function clipCode(code) {
+  return buildElement("div")
+    .withChild(
+      buildElement("code")
+        .withClass("clip__code")
+        .withText(code)
+        .build()
+    )
+    .withEventListener("click", () => navigator.clipboard.writeText(code))
     .build();
 }

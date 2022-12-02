@@ -1,7 +1,7 @@
-import { clipCode } from "../components/ClipCode.js";
-import { gotoLogin } from "../auxiliary/navigation.js";
+import { clipCode } from "../components.js";
+import { gotoLogin } from "../navigation.js";
 import { buildElement } from "../builder.js";
-import { buildDomVec } from "../containers/dom_vec.js";
+import { buildDomVec } from "../dom_vec.js";
 
 export function payloads(_params) {
   document.title = "Example Payloads";

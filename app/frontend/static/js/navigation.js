@@ -1,4 +1,4 @@
-import router from "../index.js";
+import router from "./index.js";
 
 export function navigateTo(url) {
   history.pushState(null, null, url);

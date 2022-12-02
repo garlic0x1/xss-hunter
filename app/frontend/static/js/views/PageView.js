@@ -1,5 +1,5 @@
 import { buildElement } from "../builder.js";
-import { buildDomVec } from "../containers/dom_vec.js";
+import { buildDomVec } from "../dom_vec.js";
 
 export function pageDetails(params) {
   document.title = "Collected Page";

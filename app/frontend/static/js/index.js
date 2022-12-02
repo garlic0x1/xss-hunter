@@ -5,7 +5,7 @@ import { pages } from "./views/Pages.js";
 import { pageDetails } from "./views/PageView.js";
 import { login } from "./views/Login.js";
 import { logout } from "./views/Logout.js";
-import * as nav from "./auxiliary/navigation.js";
+import { navigateTo } from "./navigation.js";
 
 const pathToRegex = path => new RegExp(
   "^" + path.replace(/\//g, "\\/")
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", e => {
     if (e.target.matches("[data-link]")) {
       e.preventDefault();
-      nav.navigateTo(e.target.href);
+      navigateTo(e.target.href);
     }
   });
 

@@ -1,4 +1,4 @@
-import { buildElement } from "../builder.js";
+import { buildElement } from "./builder.js";
 
 export function buildDomVec() {
   return new DomVec();

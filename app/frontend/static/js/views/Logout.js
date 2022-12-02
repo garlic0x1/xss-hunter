@@ -1,4 +1,4 @@
-import { navigateTo } from "../auxiliary/navigation.js";
+import { navigateTo } from "../navigation.js";
 import { buildElement } from "../builder.js";
 
 export function logout(_params) {

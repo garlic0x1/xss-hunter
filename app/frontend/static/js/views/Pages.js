@@ -1,7 +1,7 @@
-import { collectedPage } from "../components/CollectedPage.js";
+import { collectedPage } from "../components.js";
 import { buildElement } from "../builder.js";
-import { buildDomVec } from "../containers/dom_vec.js"
-import { gotoLogin } from "../auxiliary/navigation.js";
+import { buildDomVec } from "../dom_vec.js"
+import { gotoLogin } from "../navigation.js";
 
 export function pages(_params) {
   document.title = "Collected Pages";
