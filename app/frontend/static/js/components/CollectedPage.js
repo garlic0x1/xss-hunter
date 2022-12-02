@@ -1,36 +1,47 @@
-import AbstractComponent from "./AbstractComponent.js";
-import navigateTo from "../index.js";
-import DeleteButton from "./DeleteButton.js";
+import { navigateTo }  from "../auxiliary/navigation.js";
+import { deleteButton } from "./DeleteButton.js";
+import { buildElement } from "../builder.js";
 
-export default class extends AbstractComponent {
-  constructor(pageId, preview) {
-    super(null);
-    this.preview = preview;
-    this.pageId = pageId;
-  }
-  
-  async element() {
-    let el = document.createElement("div");
-    let preview = document.createElement("span");
-    preview.classList.add("button");
-    preview.classList.add("text__box");
-    preview.innerText = this.preview;
-    preview.style.display = "inline-block";
-    el.appendChild(preview);
-    el.addEventListener("click", async () => {
-      navigateTo(`/pages/${this.pageId}`)
-    });
-
-    let del_button = new DeleteButton("delete", e => {
-      fetch(`api/pages/${this.pageId}`, {
-        method: "DELETE",
-      }).then( () => {
-        navigateTo("/pages");
-      });
-    });
-
-    el.appendChild(del_button.element());
-    return el;
-  }
+export function chainloadScript(script_id, uri) {
+  return buildElement("div")
+    .withChild(
+      buildElement("span")
+        .withClasses(["button", "text__box"])
+        .withText(uri)
+        .withStyle("display", "inline-block")
+        .build()
+    )
+    .withChild(
+      deleteButton("delete", () => {
+        fetch(`api/scripts/${script_id}`, {
+          method: "DELETE",
+        }).then(() => {
+          navigateTo("/settings");
+        });
+      })
+    )
+    .build();
 }
 
+export function collectedPage(page_id, preview) {
+  return buildElement("div")
+    .withChild(
+      buildElement("span")
+        .withClasses(["button", "text__box"])
+        .withText(preview)
+        .withStyle("display", "inline-block")
+        .withEventListener("click", async () => {
+          navigateTo(`/pages/${page_id}`)
+        })
+        .build()
+    )
+    .withChild(
+      deleteButton("delete", () => {
+        fetch(`api/pages/${page_id}`, {
+          method: "DELETE",
+        }).then(() => {
+          navigateTo("/pages");
+        });
+      }))
+    .build();
+}

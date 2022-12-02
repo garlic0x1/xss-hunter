@@ -1,80 +1,69 @@
-import AbstractView from "./AbstractView.js";
-import DomStack from "../containers/DomStack.js";
-import DeleteButton from "../components/DeleteButton.js";
-import navigateTo from "../index.js";
+import { buildDomVec } from "../containers/dom_vec.js";
+import { chainloadScript } from "../components/CollectedPage.js";
+import { navigateTo, gotoLogin } from "../auxiliary/navigation.js";
+import { buildElement } from "../builder.js";
 
-export default class extends AbstractView {
-  constructor(params) {
-    super(params);
-    this.set_title("Chainload Scripts");
-  }
-  
-  update() {
-    let script_list = document.getElementById("customScripts");
-    let submit_script = document.getElementById("submitForm");
-    
-    fetch("/api/scripts").then( resp => {
-      if (resp.ok) {
-        resp.json().then ( data => {
-          let code_stack = new DomStack("custom scripts", true, true);
-          
-          Promise.all(data.map( async (item) => {
-            let script = document.createElement("div");
-            let text = document.createElement("span");
-            text.style.display = "inline-block";
-            let delete_button = new DeleteButton("delete", () => {
-              fetch(`/api/scripts/${item.id}`, {
-                method: "DELETE",
-              }).then( resp => {
-                navigateTo("/settings");
-              });
-            });
-            text.classList.add("text__box");
-            text.innerText = item.uri;
-            script.appendChild(text);
-            script.appendChild(delete_button.element());
-            code_stack.push(script);
-          }));
-          
-          script_list.appendChild(code_stack.element());
-        });
-      } else {
-        window.localStorage.setItem("authenticated", false);
-        navigateTo("/login");
-      }
-    });
-    
-    submit_script.addEventListener("submit", e => {
-      e.preventDefault();
-      let uri = e.target[0].value;
-      
-      fetch("/api/scripts", {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ uri })
-      }).then( resp => {
-        navigateTo("/settings");
-        // handle errors possibly
+export function scripts(_params) {
+  document.title = "Chainload Scripts";
+  return buildElement("div")
+    .withHtml("<h1> Chainload Scripts </h1>")
+    .withChild(list())
+    .withChild(buildElement("br").build())
+    .withChild(appendForm())
+    .build();
+}
+
+function list() {
+  let vec = buildDomVec().withFoldingTitle("scripts");
+
+  fetch("/api/scripts").then(resp => {
+    if (!resp.ok) gotoLogin();
+    resp.json().then(data => {
+      data.forEach(item => {
+        vec.push(chainloadScript(item.id, item.uri));
+        vec.render();
       });
     });
-  }
-  
-  html() {
-    return `
-      <h1> Chainload Scripts </h1>
+  });
 
-      <div id="customScripts"></div><br>
+  return vec.getElement();
+}
 
-      <div class="element__box">
-        <form class="form" id="submitForm">
+function appendForm() {
+  return buildElement("div")
+    .withClass("element__box")
+    .withChild(
+      buildElement("form")
+        .withClass("form")
+        .withHtml(`
           <div class="form__message form__message--error"></div>
           <div class="form__input-group">
             <input type="text" class="form__input" autofocus placeholder="script uri">
             <div class="form__input-error-message"></div>
           </div>
-          <button class="form__button" type="submit">Add script URI</button>
-        </form>
-      </div>
-    `;
-  }
+        `)
+        .withChild(
+          buildElement("button")
+            .withClass("form__button")
+            .withAttribute("type", "submit")
+            .withText("Add script URI")
+            .build()
+        )
+        .withEventListener("submit", e => {
+          e.preventDefault();
+          let uri = e.target[0].value;
+          fetch("/api/scripts", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uri })
+          }).then(resp => {
+            if (resp.ok)
+              navigateTo("/settings");
+            else
+              gotoLogin();
+          });
+        })
+        .build()
+    )
+    .build();
 }

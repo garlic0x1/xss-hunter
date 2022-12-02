@@ -1,15 +1,8 @@
-import AbstractView from "./AbstractView.js";
+import { buildElement } from "../builder.js";
 
-export default class extends AbstractView {
-  constructor(params) {
-    super(params);
-    this.set_title("Welcome");
-  }
-  
-  html() {
-    return `
-       <h1> Blind XSS listener </h1>
-       <p> [site info] </p>
-    `;
-  }
+export function welcome(_params) {
+  document.title = "Welcome";
+  return buildElement("div")
+    .innerText("main page")
+    .build();
 }

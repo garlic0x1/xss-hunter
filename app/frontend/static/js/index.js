@@ -1,14 +1,15 @@
-import Welcome from "./views/Welcome.js";;
-import Scripts from "./views/Scripts.js";
-import Payloads from "./views/Payloads.js";
-import Pages from "./views/Pages.js";
-import PageView from "./views/PageView.js";
-import Login from "./views/Login.js";
-import Logout from "./views/Logout.js";
+import { welcome } from "./views/Welcome.js";
+import { scripts } from "./views/Scripts.js";
+import { payloads } from "./views/Payloads.js";
+import { pages } from "./views/Pages.js";
+import { pageDetails } from "./views/PageView.js";
+import { login } from "./views/Login.js";
+import { logout } from "./views/Logout.js";
+import * as nav from "./auxiliary/navigation.js";
 
 const pathToRegex = path => new RegExp(
   "^" + path.replace(/\//g, "\\/")
-  .replace(/:\w+/g, "(.+)") + "$"
+    .replace(/:\w+/g, "(.+)") + "$"
 );
 
 const getParams = match => {
@@ -21,25 +22,20 @@ const getParams = match => {
   }));
 };
 
-export default function navigateTo(url) {
-  history.pushState(null, null, url);
-  router();
-}
-
-async function router() {
+export default async function router() {
   updateNavBar();
-  
+
   // /posts/:id
   const routes = [
-    { path: "/", view: Welcome },
-    { path: "/payloads", view: Payloads },
-    { path: "/pages", view: Pages },
-    { path: "/pages/:id", view: PageView },
-    { path: "/settings", view: Scripts },
-    { path: "/login", view: Login },
-    { path: "/logout", view: Logout },
+    { path: "/", view: welcome },
+    { path: "/payloads", view: payloads },
+    { path: "/pages", view: pages },
+    { path: "/pages/:id", view: pageDetails },
+    { path: "/settings", view: scripts },
+    { path: "/login", view: login },
+    { path: "/logout", view: logout },
   ];
-  
+
   // test each route to match
   const potentialMatches = routes.map(route => {
     return {
@@ -47,24 +43,20 @@ async function router() {
       result: location.pathname.match(pathToRegex(route.path)),
     };
   });
-  
+
   let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
-  
+
   if (!match) {
     match = {
       route: routes[0],
       results: [location.pathname],
     };
   }
-  
-  const view = new match.route.view(getParams(match));
-  
-  document.querySelector("#app").innerHTML = await view.html();
-  
-  // if the view needs actions after loading do them
-  try {
-    view.update();
-  } catch {}
+
+  let view = match.route.view;
+  let app = document.querySelector("#app");
+  app.innerHTML = "";
+  app.appendChild(view(getParams(match)));
 };
 
 window.addEventListener("popstate", router);
@@ -73,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", e => {
     if (e.target.matches("[data-link]")) {
       e.preventDefault();
-      navigateTo(e.target.href);
+      nav.navigateTo(e.target.href);
     }
   });
 
@@ -82,22 +74,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function updateNavBar() {
   let authenticated = window.localStorage.getItem("authenticated");
-  
+
   let reqAuth = Array.from(document.getElementsByClassName("req__auth"));
   let noAuth = Array.from(document.getElementsByClassName("no__auth"));
-  
+
   if (authenticated === "true") {
-    reqAuth.forEach( (el) => {
+    reqAuth.forEach((el) => {
       el.classList.remove("hidden");
     });
-    noAuth.forEach( (el) => {
+    noAuth.forEach((el) => {
       el.classList.add("hidden");
     });
   } else {
-    reqAuth.forEach( (el) => {
+    reqAuth.forEach((el) => {
       el.classList.add("hidden");
     });
-    noAuth.forEach( (el) => {
+    noAuth.forEach((el) => {
       el.classList.remove("hidden");
     });
   }

@@ -1,18 +1,27 @@
-import AbstractView from "./AbstractView.js";
-import navigateTo from "../index.js";
+import { navigateTo } from "../auxiliary/navigation.js";
+import { buildElement } from "../builder.js";
 
-export default class extends AbstractView {
-  constructor(params) {
-    super(params);
-    this.set_title("Dashboard");
-  }
-  
-  update() {
-    const logoutForm = document.querySelector("#logout");
-    
-    logoutForm.addEventListener("submit", e => {
+export function logout(_params) {
+  document.title = "Logout";
+  return buildElement("div")
+    .withClass("center")
+    .withChild(
+      buildElement("div")
+        .withClass("form__box")
+        .withHtml("<h1> Are you sure? </h1>")
+        .withChild(logoutForm())
+        .build()
+    )
+    .build();
+}
+
+function logoutForm() {
+  return buildElement("form")
+    .withClass("form__button")
+    .withHtml(`<button class="form__button" type="submit">Log out</button>`)
+    .withEventListener("submit", e => {
       e.preventDefault();
-      fetch("/auth/logout").then( (resp) => {
+      fetch("/auth/logout").then((resp) => {
         if (resp.ok) {
           window.localStorage.setItem("authenticated", false);
           navigateTo("/login");
@@ -20,19 +29,7 @@ export default class extends AbstractView {
           console.log("something went wrong...");
         }
       });
-    });
-  }
-  
-  html() {
-    return `
-    <div class="center">
-    <div class="form__box">
-      <h1 class="form__title"> Are you sure? </h1>
-      <form class="form" id="logout">
-        <button class="form__button" type="submit">Log out</button>
-      </form> 
-    </div>
-    </div>
-    `;
-  }
+    })
+    .build();
 }
+
