@@ -36,14 +36,12 @@ function loginForm() {
 function signupForm() {
   return buildElement("form")
     .withClasses(["form", "form--hidden"])
-    .withChild(
+    .withChildren([
       buildElement("h1")
         .withClass("form__title")
         .withText("Sign up")
-        .build()
-    )
-    .withChild(errorMessage())
-    .withChildren([
+        .build(),
+      errorMessage(),
       textField("text", "Username"),
       textField("password", "Password"),
       textField("password", "Confirm password"),
@@ -51,35 +49,34 @@ function signupForm() {
     ])
     .withEventListener("submit", e => {
       e.preventDefault();
-      let username = e.target[0].value;
-      let password = e.target[1].value;
-      if (password != e.target[2].value) {
-        console.log("pass no match")
+      if (e.target[1].value != e.target[2].value)
         setError("passwords dont match");
-        return;
-      }
-
-      fetch("/auth/signup", {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username,
-          password
-        })
-      }).then(resp => {
-        switch (resp.status) {
-          case 401:
-            setError("user/pass in use");
-            break;
-          case 406:
-            setError("user/pass not allowed");
-            break;
-          case 200:
-            doLogin(username, password);
-        }
-      })
+      else
+        doSignup(e.target[0].value, e.target[1].value);
     })
     .build();
+}
+
+function doSignup(username, password) {
+  fetch("/auth/signup", {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username,
+      password
+    })
+  }).then(resp => {
+    switch (resp.status) {
+      case 401:
+        setError("user/pass in use");
+        break;
+      case 406:
+        setError("user/pass not allowed");
+        break;
+      case 200:
+        doLogin(username, password);
+    }
+  });
 }
 
 function toggleForm() {

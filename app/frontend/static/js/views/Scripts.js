@@ -21,8 +21,8 @@ function list() {
     resp.json().then(data => {
       data.forEach(item => {
         vec.push(chainloadScript(item.id, item.uri));
-        vec.render();
       });
+      vec.render();
     });
   });
 
@@ -41,29 +41,26 @@ function appendForm() {
             <input type="text" class="form__input" autofocus placeholder="script uri">
             <div class="form__input-error-message"></div>
           </div>
+          <button class="form__button" type="submit">Add script URI</button>
         `)
-        .withChild(
-          buildElement("button")
-            .withClass("form__button")
-            .withAttribute("type", "submit")
-            .withText("Add script URI")
-            .build()
-        )
         .withEventListener("submit", e => {
           e.preventDefault();
-          let uri = e.target[0].value;
-          fetch("/api/scripts", {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ uri })
-          }).then(resp => {
-            if (resp.ok)
-              navigateTo("/settings");
-            else
-              gotoLogin();
-          });
+          postScript(e.target[0].value);
         })
         .build()
     )
     .build();
+}
+
+function postScript(uri) {
+  fetch("/api/scripts", {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ uri })
+  }).then(resp => {
+    if (resp.ok)
+      navigateTo("/settings");
+    else
+      gotoLogin();
+  });
 }

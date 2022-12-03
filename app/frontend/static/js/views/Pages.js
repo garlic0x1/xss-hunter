@@ -9,15 +9,17 @@ export function pages(_params) {
     .withHtml("<h1>Collected Pages</h1>")
     .withChild((() => {
       let vec = buildDomVec()
-        .withTitle(buildElement("h3").withText("pages").build());
+        .withTitle(buildElement("h3")
+          .withText("pages")
+          .build());
 
       fetch("/api/pages").then(resp => {
         if (!resp.ok) gotoLogin();
         resp.json().then(data => {
           data.forEach(item => {
             vec.push(collectedPage(item.id, `${item.time}  :  ${item.uri}`));
-            vec.render();
           })
+          vec.render();
         });
       });
 
